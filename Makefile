@@ -14,6 +14,7 @@ SRC_PATH = ./src/
 
 SRC_NAME = main.c \
 		   md5.c \
+		   sha256.c \
 
 OBJ_PATH = ./.obj/
 
