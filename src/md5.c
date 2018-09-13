@@ -38,17 +38,6 @@ static uint32_t g_k[64] = {
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391,
 };
 
-/*
-void print_hex(uint64_t *ptr, size_t len)
-{
-	size_t i;
-
-	i = -1;
-	while (++i < len)
-		printf("%llu\n", ptr[i]);
-}
-*/
-
 static void		display_hex_md5(uint32_t a, uint32_t b, uint32_t c, uint32_t d)
 {
 //some problems with my ft_printf
@@ -59,7 +48,7 @@ static void		display_hex_md5(uint32_t a, uint32_t b, uint32_t c, uint32_t d)
 	(uint32_t)swap_bigendian_littleendian(d, sizeof(d)));
 }
 
-static uint64_t	origin_string_to_padded_string(char **str)
+static uint64_t	put_padding_character_md5(char **str)
 {
 	uint64_t	len;
 	uint64_t	new_len;
@@ -79,7 +68,7 @@ static uint64_t	origin_string_to_padded_string(char **str)
 	return (new_len);
 }
 
-static void		main_loop(uint32_t *current, size_t i, uint32_t *g, uint32_t *f)
+static void		compute_hash(uint32_t *current, size_t i, uint32_t *g, uint32_t *f)
 {
 	if (i <= 15)
 	{
@@ -112,12 +101,12 @@ static void		loop_in_current_512_bits(uint32_t *current, uint32_t *m)
 	i = -1;
 	while (++i < 64)
 	{
-		main_loop(current, i, &g, &f);
+		compute_hash(current, i, &g, &f);
 		f = f + current[0] + g_k[i] + m[g];
 		current[0] = current[3];
 		current[3] = current[2];
 		current[2] = current[1];
-		current[1] = current[1] + LEFT_ROTATE(f, g_s[i]);
+		current[1] = current[1] + L_ROT(f, g_s[i]);
 	}
 }
 
@@ -128,7 +117,7 @@ void			md5(char *str)
 	uint32_t *m;
 	uint32_t current[4];
 
-	len = origin_string_to_padded_string(&str);
+	len = put_padding_character_md5(&str);
 	m = (uint32_t*)str;
 	bytes[0] = 0x67452301;
 	bytes[1] = 0xefcdab89;
