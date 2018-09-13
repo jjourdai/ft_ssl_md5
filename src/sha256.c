@@ -24,21 +24,17 @@ uint32_t k[64] = {
 	0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
 };
 
-static void		display_hex_sha256(uint32_t a, uint32_t b, uint32_t c, uint32_t d, uint32_t e, uint32_t f, uint32_t g, uint32_t h)
+static void		display_hex_sha256(uint32_t bytes[8])
 {
 //some problems with my ft_printf
-	printf("%8.8x%8.8x%8.8x%8.8x%8.8x%8.8x%8.8x%8.8x\n",
-	(uint32_t)a,
-	(uint32_t)b,
-	(uint32_t)c,
-	(uint32_t)c,
-	(uint32_t)c,
-	(uint32_t)c,
-	(uint32_t)c,
-	(uint32_t)c);
+	size_t i;
+	i = -1;
+	while (++i < 8)
+		printf("%8.8x", bytes[i]);
+	printf("\n");
 }
 
-static uint64_t	origin_string_to_padded_string(char **str)
+static uint64_t	put_padding_character_sha256(char **str)
 {
 	uint64_t	len;
 	uint64_t	new_len;
@@ -49,99 +45,100 @@ static uint64_t	origin_string_to_padded_string(char **str)
 	new_len = len + (64 - len % 64);
 	if (new_len - len < 9)
 		new_len += 64;
-	new_str = (char*)ft_memalloc(new_len);
-
+	new_str = ft_memalloc(new_len);
 	size_t i;
 	memcpy(new_str, *str, len);
 	new_str[len] = 0x80;
 	i = -1;
-	uint32_t *cast = (uint32_t*)new_str;
 	ll = (uint64_t*)new_str;
 	ll[new_len / 8 - 1] = SWAP_VALUE(len * 8);
 	*str = new_str;
-	i = -1;
-	while (++i < new_len / 4)
-	{
-		cast[i] = SWAP_VALUE(cast[i]);
-		printf("%8.8llx\n", cast[i]);
-	}
 	return (new_len);
+}
+
+static void 	prepare_message_schedule(uint8_t *msg, uint32_t *w)
+{
+	size_t i;
+	size_t j;
+	uint32_t st0;
+	uint32_t st1;
+
+	i = -1;
+	j = 0;
+	ft_bzero(w, sizeof(w));
+	while (++i < 16)
+	{
+		w[i] = ((msg[j]) << 24) | ((msg[j + 1]) << 16) | \
+			((msg[j + 2]) << 8) | ((msg[j + 3]));
+		j += 4;
+	}
+	i = 15;
+	while (++i < 64)
+	{
+		st0 =  (R_ROT(w[i - 15], 7)) ^ (R_ROT(w[i - 15], 18)) ^\
+			(w[i - 15] >> 3);
+		st1 =  (R_ROT(w[i - 2], 17)) ^ (R_ROT(w[i - 2], 19)) ^\
+			(w[i - 2] >> 10);
+		w[i] = w[i - 16] + st0 + w[i - 7] + st1;
+	}
+}
+
+static void compute_inter_hash(uint32_t *w, uint32_t *inter_hash)
+{
+	size_t i;
+	uint32_t temp1;
+	uint32_t temp2;
+
+	i = -1;
+	while (++i < 64)
+	{
+		temp1 = inter_hash[7] + S1(inter_hash) + CH(inter_hash) + k[i] + w[i];
+		temp2 = S0(inter_hash) + MAJ(inter_hash);
+		inter_hash[7] = inter_hash[6];
+		inter_hash[6] = inter_hash[5];
+		inter_hash[5] = inter_hash[4];
+		inter_hash[4] = inter_hash[3] + temp1;
+		inter_hash[3] = inter_hash[2];
+		inter_hash[2] = inter_hash[1];
+		inter_hash[1] = inter_hash[0];
+		inter_hash[0] = temp1 + temp2;
+	}
+}
+
+static void 	update_hash(uint32_t hash[8], uint32_t inter_hash[8])
+{
+	hash[0] += inter_hash[0];
+	hash[1] += inter_hash[1];
+	hash[2] += inter_hash[2];
+	hash[3] += inter_hash[3];
+	hash[4] += inter_hash[4];
+	hash[5] += inter_hash[5];
+	hash[6] += inter_hash[6];
+	hash[7] += inter_hash[7];
 }
 
 void	sha256(char *str)
 {
-	uint32_t h0 = 0x6a09e667;
-	uint32_t h1 = 0xbb67ae85;
-	uint32_t h2 = 0x3c6ef372;
-	uint32_t h3 = 0xa54ff53a;
-	uint32_t h4 = 0x510e527f;
-	uint32_t h5 = 0x9b05688c;
-	uint32_t h6 = 0x1f83d9ab;
-	uint32_t h7 = 0x5be0cd19;
+	uint32_t	inter_hash[8] = {0};
+	uint64_t	len;
+	uint32_t	w[64] = {0};
+	uint8_t		*bytes_string;
+	uint32_t	hash[8] = {
+		0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
+		0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19
+	};
 
-	uint64_t len;
-	uint32_t *m;
-
-	len = origin_string_to_padded_string(&str);
-
-	m = (uint32_t*)str;
+	len = put_padding_character_sha256(&str);
+  bytes_string = (uint8_t*)str;
 	while (len > 0)
 	{
-		uint32_t a = h0;
-		uint32_t b = h1;
-		uint32_t c = h2;
-		uint32_t d = h3;
-		uint32_t e = h4;
-		uint32_t f = h5;
-		uint32_t g = h6;
-		uint32_t h = h7;
-		size_t i;
-		int32_t w[64] = {0};
-		i = -1;
-		int j = 0;
-		while (++i < 16)
-		{
-			w[i] = m[i];
-		}
-		//ft_bzero(w, 64);
-		//ft_memcpy(w, m, 16);
-		i = 15;
-		while (++i < 64)
-		{
-			uint32_t st0 =  (RIGHT_ROTATE(w[i - 15], 7)) ^ (RIGHT_ROTATE(w[i - 15], 18)) ^ (w[i - 15] >> 3);
-			uint32_t st1 =  (RIGHT_ROTATE(w[i - 2], 17)) ^ (RIGHT_ROTATE(w[i - 2], 19)) ^ (w[i - 2] >> 10);
-			w[i] = w[i - 16] + st0 + w[i - 7] + st1;
-		}
-		i = -1;
-		while (++i < 64)
-		{
-			uint32_t s1 = (RIGHT_ROTATE(e, 6)) ^ (RIGHT_ROTATE(e, 11)) ^ (RIGHT_ROTATE(e, 25));
-			uint32_t ch = (e & f) ^ ((~e) & g);
-			uint32_t temp1 = h + s1 + ch + k[i] + w[i];
-			uint32_t s0 = (RIGHT_ROTATE(a, 2)) ^ (RIGHT_ROTATE(a, 13)) ^ (RIGHT_ROTATE(a, 22));
-			uint32_t maj = (a & b) ^ (a & c) ^ (b & c);
-			uint32_t temp2 = s0 + maj;
-			h = g;
-			g = f;
-			f = e;
-			e = d + temp1;
-			d = c;
-			c = b;
-			b = a;
-			a = temp1 + temp2;
-		}
-		h0 += a;
-		h1 += b;
-		h2 += c;
-		h3 += d;
-		h4 += e;
-		h5 += f;
-		h6 += g;
-		h7 += h;
-		//========================
-		m = m + 16;
+		ft_memcpy(inter_hash, hash, sizeof(hash));
+		prepare_message_schedule(bytes_string, w);
+		compute_inter_hash(w, inter_hash);
+		update_hash(hash, inter_hash);
+		bytes_string += 64;
 		len -= 64;
 	}
-	display_hex_sha256(h0,h1,h2,h3,h4,h5,h6,h7);
+	display_hex_sha256(hash);
 	free(str);
 }
