@@ -34,25 +34,27 @@ static void		display_hex_sha256(uint32_t bytes[8])
 	printf("\n");
 }
 
-static uint64_t	put_padding_character_sha256(char **str)
+static uint64_t	put_padding_character_sha256(t_data *info)
 {
-	uint64_t	len;
 	uint64_t	new_len;
 	uint64_t	*ll;
 	char		*new_str;
+	size_t i;
 
-	len = (uint64_t)ft_strlen(*str);
-	new_len = len + (64 - len % 64);
-	if (new_len - len < 9)
+	if (info->len == 0)
+		info->len = (uint64_t)ft_strlen((char*)info->bytes);
+	new_len = info->len + (64 - info->len % 64);
+	if (new_len - info->len < 9)
 		new_len += 64;
 	new_str = ft_memalloc(new_len);
-	size_t i;
-	memcpy(new_str, *str, len);
-	new_str[len] = 0x80;
+	memcpy(new_str, info->bytes, info->len);
+	new_str[info->len] = 0x80;
 	i = -1;
 	ll = (uint64_t*)new_str;
-	ll[new_len / 8 - 1] = SWAP_VALUE(len * 8);
-	*str = new_str;
+	ll[new_len / 8 - 1] = SWAP_VALUE(info->len * 8);
+	if (info->bytes != NULL)
+		free(info->bytes);
+	info->bytes = (uint8_t*)new_str;
 	return (new_len);
 }
 
@@ -117,7 +119,7 @@ static void 	update_hash(uint32_t hash[8], uint32_t inter_hash[8])
 	hash[7] += inter_hash[7];
 }
 
-void	sha256(char *str)
+void	sha256(t_data *info)
 {
 	uint32_t	inter_hash[8] = {0};
 	uint64_t	len;
@@ -128,8 +130,8 @@ void	sha256(char *str)
 		0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19
 	};
 
-	len = put_padding_character_sha256(&str);
-  bytes_string = (uint8_t*)str;
+	len = put_padding_character_sha256(info);
+  bytes_string = info->bytes;
 	while (len > 0)
 	{
 		ft_memcpy(inter_hash, hash, sizeof(hash));
@@ -139,6 +141,7 @@ void	sha256(char *str)
 		bytes_string += 64;
 		len -= 64;
 	}
+	free(info->bytes);
+	info->final_hash = hash;
 	display_hex_sha256(hash);
-	free(str);
 }

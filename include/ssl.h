@@ -16,6 +16,7 @@
 # include "libft.h"
 # include "stdint.h"
 # include "stdio.h"
+# include "fcntl.h"
 
 # define L_ROT(X, C) ((X << C) | (X >> (32 - C)))
 # define R_ROT(X, C) ((X >> C) | (X << (32 - C)))
@@ -27,19 +28,44 @@
 # define S0(X) ((R_ROT(X[0], 2)) ^ (R_ROT(X[0], 13)) ^ (R_ROT(X[0], 22)))
 
 enum e_macro {
-  MD5,
-  SHA256,
   ERROR,
   SUCCESS,
+  DATA_RECEIVED,
+  DATA_NOT_RECEIVED
 };
 
+enum e_command {
+  MD5 = 0,
+  SHA256 = 1,
+  END = 2,
+};
 
+enum e_param_type {
+  FILE_,
+  STDIN_,
+  STRING_,
+};
 
+# define F_ECHO (1 << 0)
+# define F_QUIET (1 << 1)
+# define F_REVERSE (1 << 2)
 
+// # define PARAM_TYPE_STRING (1 << 0)
+// # define PARAM_TYPE_FILE (1 << 1)
+// # define PARAM_TYPE_STDIN (1 << 2)
 
-//#define INITIAL_VALUE = 0x67452301efcdab8998badcfe10325476;
+# define BUFFER_SIZE 4096
 
-void	md5(char *str);
-void	sha256(char *str);
+typedef struct   s_data {
+    uint8_t     flag;
+    uint8_t     param_type;
+    uint8_t     *string;
+    uint8_t     *bytes;
+    uint64_t    len;
+    uint32_t    *final_hash;
+}                t_data;
+
+void	md5(t_data *info);
+void	sha256(t_data *info);
 
 #endif

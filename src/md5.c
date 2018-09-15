@@ -38,33 +38,36 @@ static uint32_t g_k[64] = {
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391,
 };
 
-static void		display_hex_md5(uint32_t a, uint32_t b, uint32_t c, uint32_t d)
+static void		display_hex_md5(uint32_t bytes[4])
 {
 //some problems with my ft_printf
-	printf("%8.8x%8.8x%8.8x%8.8x\n",
-	(uint32_t)swap_bigendian_littleendian(a, sizeof(a)),
-	(uint32_t)swap_bigendian_littleendian(b, sizeof(b)),
-	(uint32_t)swap_bigendian_littleendian(c, sizeof(c)),
-	(uint32_t)swap_bigendian_littleendian(d, sizeof(d)));
+	size_t i;
+
+	i = -1;
+	while (++i < 4)
+		printf("%8.8x", SWAP_VALUE(bytes[i]));
+	printf("\n");
 }
 
-static uint64_t	put_padding_character_md5(char **str)
+static uint64_t	put_padding_character_md5(t_data *info)
 {
-	uint64_t	len;
 	uint64_t	new_len;
 	uint64_t	*ll;
 	char		*new_str;
 
-	len = (uint64_t)ft_strlen(*str);
-	new_len = len + (64 - len % 64);
-	if (new_len - len < 9)
+	if (info->len == 0)
+		info->len = (uint64_t)ft_strlen((char*)info->bytes);
+	new_len = info->len + (64 - info->len % 64);
+	if (new_len - info->len < 9)
 		new_len += 64;
 	new_str = (char*)ft_memalloc(new_len);
-	memcpy(new_str, *str, len);
-	new_str[len] = 0x80;
+	memcpy(new_str, info->bytes, info->len);
+	new_str[info->len] = 0x80;
 	ll = (uint64_t*)new_str;
-	ll[new_len / 8 - 1] = len * 8;
-	*str = new_str;
+	ll[new_len / 8 - 1] = info->len * 8;
+	// if (info->bytes != NULL)
+	// free(info->bytes);
+	info->bytes = (uint8_t*)new_str;
 	return (new_len);
 }
 
@@ -110,30 +113,31 @@ static void		loop_in_current_512_bits(uint32_t *current, uint32_t *m)
 	}
 }
 
-void			md5(char *str)
+void			md5(t_data *info)
 {
-	uint32_t bytes[4];
+	uint32_t hash[4];
 	uint64_t len;
 	uint32_t *m;
 	uint32_t current[4];
 
-	len = put_padding_character_md5(&str);
-	m = (uint32_t*)str;
-	bytes[0] = 0x67452301;
-	bytes[1] = 0xefcdab89;
-	bytes[2] = 0x98badcfe;
-	bytes[3] = 0x10325476;
+	len = put_padding_character_md5(info);
+	m = (uint32_t*)info->bytes;
+	hash[0] = 0x67452301;
+	hash[1] = 0xefcdab89;
+	hash[2] = 0x98badcfe;
+	hash[3] = 0x10325476;
 	while (len > 0)
 	{
-		ft_memcpy(current, bytes, sizeof(current));
+		ft_memcpy(current, hash, sizeof(current));
 		loop_in_current_512_bits(current, m);
-		bytes[0] = bytes[0] + current[0];
-		bytes[1] = bytes[1] + current[1];
-		bytes[2] = bytes[2] + current[2];
-		bytes[3] = bytes[3] + current[3];
+		hash[0] = hash[0] + current[0];
+		hash[1] = hash[1] + current[1];
+		hash[2] = hash[2] + current[2];
+		hash[3] = hash[3] + current[3];
 		m = m + 16;
 		len -= 64;
 	}
-	free(str);
-	display_hex_md5(bytes[0], bytes[1], bytes[2], bytes[3]);
+	free(info->bytes);
+	info->final_hash = hash;
+	display_hex_md5(hash);
 }

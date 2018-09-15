@@ -28,7 +28,7 @@ NAME = ft_ssl
 
 CC = gcc
 
-CFLAGS = -Wall -Wextra
+CFLAGS = -Wall -Wextra -g
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
 
