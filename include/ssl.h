@@ -6,7 +6,7 @@
 /*   By: jjourdai <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 13:30:52 by jjourdai          #+#    #+#             */
-/*   Updated: 2018/09/12 15:52:14 by jjourdai         ###   ########.fr       */
+/*   Updated: 2018/09/16 16:50:02 by jjourdai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,20 +28,20 @@
 # define S1(X) ((R_ROT(X[4], 6)) ^ (R_ROT(X[4], 11)) ^ (R_ROT(X[4], 25)))
 # define S0(X) ((R_ROT(X[0], 2)) ^ (R_ROT(X[0], 13)) ^ (R_ROT(X[0], 22)))
 
-enum e_macro {
-  ERROR,
-  SUCCESS,
-  DATA_RECEIVED,
-  DATA_NOT_RECEIVED
+enum	e_macro {
+	ERROR,
+	SUCCESS,
+	DATA_RECEIVED,
+	DATA_NOT_RECEIVED
 };
 
-enum e_param_type {
-  MD5 = 0,
-  SHA256 = 1,
-  END = 2,
-  FILE_,
-  STDIN_,
-  STRING_,
+enum	e_param_type {
+	MD5 = 0,
+	SHA256 = 1,
+	END = 2,
+	FILE_,
+	STDIN_,
+	STRING_,
 };
 
 # define F_ECHO (1 << 0)
@@ -49,20 +49,26 @@ enum e_param_type {
 # define F_REVERSE (1 << 2)
 
 # define BUFFER_SIZE 512
+//# define MACRO_FOR_TEST " (%s) "
 
-typedef struct   s_data {
-    uint8_t     flag;
-    uint8_t     param_type;
-    uint8_t     *string;
-    uint8_t     *bytes;
-    uint64_t    len;
-    uint32_t    final_hash[8];
-}                t_data;
+# define MACRO_FOR_TEST "(%s)"
 
-void	md5(t_data *info);
-void	sha256(t_data *info);
-void	display_result(t_data *target, int command);
+typedef struct		s_data {
+	uint8_t			flag;
+	uint8_t			param_type;
+	uint8_t			*string;
+	uint8_t			*bytes;
+	uint64_t		len;
+	uint32_t		final_hash[8];
+}					t_data;
 
-void handle_parameters_and_exec(int command, int nb_opt, int opt_flag, char**argv);
+void				md5(t_data *info);
+void				sha256(t_data *info);
+void				display_result(t_data *target, int command);
+
+void				handle_parameters_and_exec(int command, int nb_opt,\
+	int opt_flag, char**argv);
+void				exec_command(t_data *target, int command, int opt_flag);
+void				exec_read_stdin(int command, int opt_flag);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: jjourdai <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/12 12:27:25 by jjourdai          #+#    #+#             */
-/*   Updated: 2018/09/12 14:39:40 by jjourdai         ###   ########.fr       */
+/*   Updated: 2018/09/16 16:44:38 by jjourdai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,15 @@ static uint64_t	put_padding_character_md5(t_data *info)
 	new_str[info->len] = 0x80;
 	ll = (uint64_t*)new_str;
 	ll[new_len / 8 - 1] = info->len * 8;
-	// if (info->bytes != NULL)
-	// free(info->bytes);
+	if (info->bytes != NULL && (info->param_type == FILE_ ||\
+		info->param_type == STDIN_))
+		free(info->bytes);
 	info->bytes = (uint8_t*)new_str;
 	return (new_len);
 }
 
-static void		compute_hash(uint32_t *current, size_t i, uint32_t *g, uint32_t *f)
+static void		compute_hash(uint32_t *current, size_t i, uint32_t *g,\
+	uint32_t *f)
 {
 	if (i <= 15)
 	{

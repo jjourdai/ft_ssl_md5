@@ -17,6 +17,7 @@ SRC_NAME = main.c \
 		   sha256.c \
 			 handle_input.c \
 			 display_result.c \
+			 exec_command.c \
 
 OBJ_PATH = ./.obj/
 
