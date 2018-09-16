@@ -15,6 +15,8 @@ SRC_PATH = ./src/
 SRC_NAME = main.c \
 		   md5.c \
 		   sha256.c \
+			 handle_input.c \
+			 display_result.c \
 
 OBJ_PATH = ./.obj/
 
@@ -42,7 +44,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	make -C ./libft/
-	$(CC) $^ -o $(NAME) $(LDFLAGS) $(LDLIBS) -ltermcap
+	$(CC) $^ -o $(NAME) $(CFLAGS) $(LDFLAGS) $(LDLIBS) -ltermcap
 
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c ./include
 	@mkdir $(OBJ_PATH) $(OBJ_FULL_PATH) 2> /dev/null || true

@@ -17,6 +17,7 @@
 # include "stdint.h"
 # include "stdio.h"
 # include "fcntl.h"
+# include "errno.h"
 
 # define L_ROT(X, C) ((X << C) | (X >> (32 - C)))
 # define R_ROT(X, C) ((X >> C) | (X << (32 - C)))
@@ -34,13 +35,10 @@ enum e_macro {
   DATA_NOT_RECEIVED
 };
 
-enum e_command {
+enum e_param_type {
   MD5 = 0,
   SHA256 = 1,
   END = 2,
-};
-
-enum e_param_type {
   FILE_,
   STDIN_,
   STRING_,
@@ -50,11 +48,7 @@ enum e_param_type {
 # define F_QUIET (1 << 1)
 # define F_REVERSE (1 << 2)
 
-// # define PARAM_TYPE_STRING (1 << 0)
-// # define PARAM_TYPE_FILE (1 << 1)
-// # define PARAM_TYPE_STDIN (1 << 2)
-
-# define BUFFER_SIZE 4096
+# define BUFFER_SIZE 512
 
 typedef struct   s_data {
     uint8_t     flag;
@@ -62,10 +56,13 @@ typedef struct   s_data {
     uint8_t     *string;
     uint8_t     *bytes;
     uint64_t    len;
-    uint32_t    *final_hash;
+    uint32_t    final_hash[8];
 }                t_data;
 
 void	md5(t_data *info);
 void	sha256(t_data *info);
+void	display_result(t_data *target, int command);
+
+void handle_parameters_and_exec(int command, int nb_opt, int opt_flag, char**argv);
 
 #endif
