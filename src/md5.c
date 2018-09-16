@@ -38,17 +38,6 @@ static uint32_t g_k[64] = {
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391,
 };
 
-static void		display_hex_md5(uint32_t bytes[4])
-{
-//some problems with my ft_printf
-	size_t i;
-
-	i = -1;
-	while (++i < 4)
-		printf("%8.8x", SWAP_VALUE(bytes[i]));
-	printf("\n");
-}
-
 static uint64_t	put_padding_character_md5(t_data *info)
 {
 	uint64_t	new_len;
@@ -61,7 +50,7 @@ static uint64_t	put_padding_character_md5(t_data *info)
 	if (new_len - info->len < 9)
 		new_len += 64;
 	new_str = (char*)ft_memalloc(new_len);
-	memcpy(new_str, info->bytes, info->len);
+	ft_memcpy(new_str, info->bytes, info->len);
 	new_str[info->len] = 0x80;
 	ll = (uint64_t*)new_str;
 	ll[new_len / 8 - 1] = info->len * 8;
@@ -138,6 +127,5 @@ void			md5(t_data *info)
 		len -= 64;
 	}
 	free(info->bytes);
-	info->final_hash = hash;
-	display_hex_md5(hash);
+	ft_memcpy(info->final_hash, hash, sizeof(hash));
 }
