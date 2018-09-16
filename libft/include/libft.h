@@ -6,7 +6,7 @@
 /*   By: jjourdai <jjourdai@student42.fr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/03 11:20:09 by jjourdai          #+#    #+#             */
-/*   Updated: 2018/09/12 12:32:18 by jjourdai         ###   ########.fr       */
+/*   Updated: 2018/09/16 17:35:19 by jjourdai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,5 +195,6 @@ int (cmpf)(void*, void*));
 void				*btree_search_item(t_btree *root, void *data_ref,
 int	(*cmpf)(void *, void*));
 int					btree_level_count(t_btree *root);
-uint64_t			swap_bigendian_littleendian(uint64_t number, size_t sizeoff);
+uint64_t			swap_bigendian_littleendian(uint64_t number, \
+	size_t sizeoff);
 #endif
