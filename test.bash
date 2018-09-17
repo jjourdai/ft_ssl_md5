@@ -116,3 +116,28 @@ if [ "$str" != "$result" ]
 then
   echo "Not same"
 fi
+
+echo "https://www.youtube.com/watch?v=w-5yAtMtrSM" > big_smoke_order_remix
+echo test13
+str="a8dc621c3dcf18a8a2eddae1845e8e5f6498970a867056ac5f7121ac3d66cfd9"
+result=$(./ft_ssl sha256 -q big_smoke_order_remix)
+if [ "$str" != "$result" ]
+then
+  echo "Not same"
+fi
+
+echo test14
+str="SHA256 (big_smoke_order_remix) = a8dc621c3dcf18a8a2eddae1845e8e5f6498970a867056ac5f7121ac3d66cfd9"
+result=$(./ft_ssl sha256 big_smoke_order_remix)
+if [ "$str" != "$result" ]
+then
+  echo "Not same"
+fi
+
+echo test15
+str="SHA256 (\"wubba lubba dub dub\") = 23a0944d11b5a54f1970492b5265c732044ae824b7d5656acb193e7f0e51e5fa"
+result=$(./ft_ssl sha256 -s "wubba lubba dub dub")
+if [ "$str" != "$result" ]
+then
+  echo "Not same"
+fi

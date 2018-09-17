@@ -6,7 +6,7 @@
 /*   By: jjourdai <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/12 12:28:59 by jjourdai          #+#    #+#             */
-/*   Updated: 2018/09/16 16:49:10 by jjourdai         ###   ########.fr       */
+/*   Updated: 2018/09/16 17:57:07 by jjourdai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,5 @@ int				main(int argc, char **argv)
 		nb_opt = get_flag(argv, &opt_flag);
 		handle_parameters_and_exec(command, nb_opt, opt_flag, argv);
 	}
-	sleep(2);
 	return (EXIT_SUCCESS);
 }
