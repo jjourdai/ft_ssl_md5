@@ -18,6 +18,7 @@ SRC_NAME = main.c \
 			 handle_input.c \
 			 display_result.c \
 			 exec_command.c \
+			 base64.c \
 
 OBJ_PATH = ./.obj/
 

@@ -6,7 +6,7 @@
 /*   By: jjourdai <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/12 12:28:59 by jjourdai          #+#    #+#             */
-/*   Updated: 2018/09/16 17:57:07 by jjourdai         ###   ########.fr       */
+/*   Updated: 2018/09/17 10:27:17 by jjourdai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ static t_bool	get_function(char *str, int *flag)
 	static char	command[END][6] = {
 		[MD5] = "md5",
 		[SHA256] = "sha256",
+		[BASE64] = "base64",
 	};
 	size_t		i;
 

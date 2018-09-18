@@ -6,7 +6,7 @@
 /*   By: jjourdai <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 13:30:52 by jjourdai          #+#    #+#             */
-/*   Updated: 2018/09/17 09:49:00 by jjourdai         ###   ########.fr       */
+/*   Updated: 2018/09/17 16:15:59 by jjourdai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,17 +28,19 @@
 # define S1(X) ((R_ROT(X[4], 6)) ^ (R_ROT(X[4], 11)) ^ (R_ROT(X[4], 25)))
 # define S0(X) ((R_ROT(X[0], 2)) ^ (R_ROT(X[0], 13)) ^ (R_ROT(X[0], 22)))
 
+//fd stderr sur l'usage
 enum	e_macro {
 	ERROR,
 	SUCCESS,
 	DATA_RECEIVED,
-	DATA_NOT_RECEIVED
+	DATA_NOT_RECEIVED,
 };
 
 enum	e_param_type {
 	MD5 = 0,
 	SHA256 = 1,
-	END = 2,
+	BASE64,
+	END,
 	FILE_,
 	STDIN_,
 	STRING_,
@@ -64,6 +66,7 @@ typedef struct		s_data {
 
 void				md5(t_data *info);
 void				sha256(t_data *info);
+void				base64(t_data *info);
 void				display_result(t_data *target, int command);
 
 void				handle_parameters_and_exec(int command, int nb_opt,\

@@ -16,6 +16,7 @@
 static void		(*g_dispatcher[]) (struct s_data *) = {
 	[MD5] = md5,
 	[SHA256] = sha256,
+	[BASE64] = base64,
 };
 
 static int		read_fd(t_data *info, int fd)
