@@ -24,7 +24,6 @@ static int	get_parameters(char **argv, t_data *target, int *already_get,\
 				"string after him\n"));
 			exit(EXIT_FAILURE);
 		}
-		*already_get = 1;
 		target->bytes = (uint8_t*)argv[*i + 1];
 		target->param_type = STRING_;
 		target->string = (uint8_t*)argv[*i + 1];
@@ -33,6 +32,7 @@ static int	get_parameters(char **argv, t_data *target, int *already_get,\
 	}
 	else
 	{
+		*already_get = 1;
 		target->string = (uint8_t*)argv[*i];
 		target->param_type = FILE_;
 		return (1);
@@ -40,7 +40,7 @@ static int	get_parameters(char **argv, t_data *target, int *already_get,\
 	return (0);
 }
 
-void		handle_parameters_and_exec(int command, int nb_opt,\
+void		hash_f_handle_parameters_and_exec(t_command *cmd, int nb_opt,\
 	int opt_flag, char **argv)
 {
 	int		i;
@@ -55,9 +55,9 @@ void		handle_parameters_and_exec(int command, int nb_opt,\
 	{
 		ft_bzero(&target, sizeof(t_data));
 		nb_target += get_parameters(argv, &target, &already_get, &i);
-		exec_command(&target, command, opt_flag);
+		exec_command(&target, cmd, opt_flag);
 		i++;
 	}
 	if (nb_target == 0)
-		exec_read_stdin(command, opt_flag);
+		exec_read_stdin(cmd, opt_flag);
 }

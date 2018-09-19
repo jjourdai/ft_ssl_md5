@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   display_result.c                                   :+:      :+:    :+:   */
+/*   display_hash.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jjourdai <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -47,7 +47,7 @@ static char		*int_to_char(t_data *target, size_t length, int command)
 	return (hash_str);
 }
 
-void			display_result(t_data *target, int command)
+void			display_hash(t_data *target, t_command *cmd)
 {
 	int				j;
 	char			*hash_str;
@@ -55,7 +55,7 @@ void			display_result(t_data *target, int command)
 
 	j = -1;
 	ft_bzero(str, sizeof(str));
-	hash_str = int_to_char(target, (command == MD5) ? 4 : 8, command);
+	hash_str = int_to_char(target, (cmd->command == MD5) ? 4 : 8, cmd->command);
 	if (target->param_type == STDIN_ && target->flag & F_ECHO)
 		ft_printf("%s%s\n", target->string, hash_str);
 	else if (target->flag & F_QUIET || target->param_type == STDIN_)
@@ -64,9 +64,9 @@ void			display_result(t_data *target, int command)
 	{
 		if (target->flag & F_REVERSE)
 			ft_sprintf(str, "%%s %s\n", g_data[target->param_type],\
-					g_data[command]);
+					g_data[cmd->command]);
 		else
-			ft_sprintf(str, "%s" MACRO_FOR_TEST "= %%s\n", g_data[command],\
+			ft_sprintf(str, "%s" MACRO_FOR_TEST "= %%s\n", g_data[cmd->command],\
 					g_data[target->param_type]);
 		if (target->flag & F_REVERSE)
 			ft_printf(str, hash_str, target->string);

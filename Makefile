@@ -15,10 +15,13 @@ SRC_PATH = ./src/
 SRC_NAME = main.c \
 		   md5.c \
 		   sha256.c \
-			 handle_input.c \
-			 display_result.c \
+		   handle_input_hash_function.c \
+			 handle_input_base64.c \
+			 display_hash.c \
 			 exec_command.c \
 			 base64.c \
+			 get_hash_function_flag.c \
+			 get_base64_function_flag.c \
 
 OBJ_PATH = ./.obj/
 

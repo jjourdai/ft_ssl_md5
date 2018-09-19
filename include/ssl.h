@@ -6,7 +6,7 @@
 /*   By: jjourdai <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 13:30:52 by jjourdai          #+#    #+#             */
-/*   Updated: 2018/09/17 16:15:59 by jjourdai         ###   ########.fr       */
+/*   Updated: 2018/09/19 14:01:02 by jjourdai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,21 +39,31 @@ enum	e_macro {
 enum	e_param_type {
 	MD5 = 0,
 	SHA256 = 1,
-	BASE64,
+	BASE64 = 2,
 	END,
 	FILE_,
 	STDIN_,
 	STRING_,
 };
 
-# define F_ECHO (1 << 0)
-# define F_QUIET (1 << 1)
-# define F_REVERSE (1 << 2)
+enum 	e_hash_function {
+	F_ECHO  = (1 << 0),
+	F_QUIET  = (1 << 1),
+	F_REVERSE  = (1 << 2),
+};
+
+enum 	e_base_64 {
+	F_INPUT = (1 << 3),
+	F_OUPUT = (1 << 4),
+	F_DECODE = (1 << 5),
+	F_ENCODE = (1 << 6),
+};
 
 # define BUFFER_SIZE 512
 //# define MACRO_FOR_TEST " (%s) "
 
 # define MACRO_FOR_TEST "(%s)"
+
 
 typedef struct		s_data {
 	uint8_t			flag;
@@ -61,17 +71,35 @@ typedef struct		s_data {
 	uint8_t			*string;
 	uint8_t			*bytes;
 	uint64_t		len;
+	int				fd;
 	uint32_t		final_hash[8];
 }					t_data;
 
+typedef struct		s_command {
+	int				command;
+	char			*string;
+	void			(*exec_command)(t_data *info);
+	void			(*get_params)(struct s_command *, char**);
+	void			(*display)(t_data *target, struct s_command *cmd);
+}					t_command;
+
+// extern t_command cmd[][6];
+
 void				md5(t_data *info);
 void				sha256(t_data *info);
-void				base64(t_data *info);
-void				display_result(t_data *target, int command);
 
-void				handle_parameters_and_exec(int command, int nb_opt,\
+void				display_hash(t_data *target, t_command *cmd);
+void 				get_params_hash_function(t_command *cmd, char**argv);
+void				hash_f_handle_parameters_and_exec(t_command *cmd, int nb_opt,\
 	int opt_flag, char**argv);
-void				exec_command(t_data *target, int command, int opt_flag);
-void				exec_read_stdin(int command, int opt_flag);
+void				exec_command(t_data *target, t_command *cmd, int opt_flag);
+void				exec_read_stdin(t_command *cmd, int opt_flag);
+
+void				base64(t_data *info);
+
+void	display_base64(t_data *info, t_command *cmd);
+void 				get_params_base64(t_command *cmd, char**argv);
+void		base64_handle_parameters_and_exec(t_command *cmd, int nb_opt,\
+	int opt_flag, char **argv);
 
 #endif
