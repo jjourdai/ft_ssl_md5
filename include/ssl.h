@@ -6,7 +6,7 @@
 /*   By: jjourdai <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 13:30:52 by jjourdai          #+#    #+#             */
-/*   Updated: 2018/09/19 14:01:02 by jjourdai         ###   ########.fr       */
+/*   Updated: 2018/09/22 14:50:40 by jjourdai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ enum	e_param_type {
 	MD5 = 0,
 	SHA256 = 1,
 	BASE64 = 2,
+	DES,
 	END,
 	FILE_,
 	STDIN_,
@@ -54,17 +55,21 @@ enum 	e_hash_function {
 	F_STRING  = (1 << 3),
 };
 
-enum	e_lexer_params {
-	INIT = 0,
-	SHORT_OPT = 1,
-	LONG_OPT = 2,
-};
-
 enum 	e_base_64 {
 	F_INPUT = (1 << 4),
 	F_OUPUT = (1 << 5),
 	F_DECODE = (1 << 6),
 	F_ENCODE = (1 << 7),
+};
+
+enum 	e_des {
+	F_LOL = (1 << 8),
+	F_DECRYPT = (1 << 9),
+	F_ENCRYPT = (1 << 10),
+	F_KEY = (1 << 11),
+	F_PASSWORD = (1 << 12),
+	F_SALT = (1 << 13),
+	F_VECTOR = (1 << 14),
 };
 
 # define BUFFER_SIZE 512
@@ -119,5 +124,10 @@ void 				get_params_base64(t_command *, t_list*, int);
 void		base64_handle_parameters_and_exec(t_command *cmd, int nb_opt,\
 	int opt_flag, char **argv);
 t_list	*get_params(char **argv, int argc, int index, int *flag);
+
+void				des(t_data *info);
+
+void	display_des(t_data *info, t_command *cmd);
+void	run_des_parameters_and_exec(t_command *, t_list *, int opt_flag);
 
 #endif

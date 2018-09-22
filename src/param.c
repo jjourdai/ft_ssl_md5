@@ -6,7 +6,7 @@
 /*   By: jjourdai <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/12 12:28:59 by jjourdai          #+#    #+#             */
-/*   Updated: 2018/09/19 14:01:29 by jjourdai         ###   ########.fr       */
+/*   Updated: 2018/09/22 14:43:50 by jjourdai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,18 @@ static t_option base64_opt[][256] = {
 		{"quiet", 'q', F_QUIET, NULL},
 		{"reverse", 'r', F_REVERSE, NULL},
 		{"string", 's', F_STRING, store_parameters},
+		{NULL, 0, 0, NULL},
+	},
+	[DES] = {
+		{"", 'a', F_LOL, NULL},
+		{"decrypt", 'd', F_DECRYPT, NULL},
+		{"encrypt", 'e', F_ENCRYPT, NULL},
+		{"input", 'i', F_INPUT, store_parameters},
+		{"key", 'k', F_KEY, store_parameters},
+		{"output", 'o', F_OUPUT, store_parameters},
+		{"password", 'p', F_PASSWORD, store_parameters},
+		{"salt", 's', F_SALT, store_parameters},
+		{"initvector", 'v', F_VECTOR, store_parameters},
 		{NULL, 0, 0, NULL},
 	},
 };

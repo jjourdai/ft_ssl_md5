@@ -16,13 +16,13 @@ SRC_NAME = main.c \
 		   md5.c \
 		   sha256.c \
 		   handle_input_hash_function.c \
-			 handle_input_base64.c \
 			 display_hash.c \
 			 exec_command.c \
 			 base64.c \
 			 get_hash_function_flag.c \
 			 get_base64_function_flag.c \
-			param.c
+			param.c \
+			des.c \
 
 OBJ_PATH = ./.obj/
 
