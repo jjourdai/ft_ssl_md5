@@ -44,19 +44,27 @@ enum	e_param_type {
 	FILE_,
 	STDIN_,
 	STRING_,
+	NONE_,
 };
 
 enum 	e_hash_function {
 	F_ECHO  = (1 << 0),
 	F_QUIET  = (1 << 1),
 	F_REVERSE  = (1 << 2),
+	F_STRING  = (1 << 3),
+};
+
+enum	e_lexer_params {
+	INIT = 0,
+	SHORT_OPT = 1,
+	LONG_OPT = 2,
 };
 
 enum 	e_base_64 {
-	F_INPUT = (1 << 3),
-	F_OUPUT = (1 << 4),
-	F_DECODE = (1 << 5),
-	F_ENCODE = (1 << 6),
+	F_INPUT = (1 << 4),
+	F_OUPUT = (1 << 5),
+	F_DECODE = (1 << 6),
+	F_ENCODE = (1 << 7),
 };
 
 # define BUFFER_SIZE 512
@@ -78,28 +86,38 @@ typedef struct		s_data {
 typedef struct		s_command {
 	int				command;
 	char			*string;
-	void			(*exec_command)(t_data *info);
-	void			(*get_params)(struct s_command *, char**);
-	void			(*display)(t_data *target, struct s_command *cmd);
+	void			(*exec_command)(struct s_data*);
+	void			(*get_params)(struct s_command*, t_list*, int);
+	void			(*display)(struct s_data*, struct s_command *);
 }					t_command;
 
-// extern t_command cmd[][6];
+typedef struct		s_parameters {
+	char 			*str;
+	int			type;
+}			t_parameters;
+
+typedef struct		s_option {
+	char 			*longname;
+	char 			shortname;
+	int				flag;
+	t_parameters	*(*f) (char*, int);
+}			t_option;
 
 void				md5(t_data *info);
 void				sha256(t_data *info);
 
 void				display_hash(t_data *target, t_command *cmd);
-void 				get_params_hash_function(t_command *cmd, char**argv);
-void				hash_f_handle_parameters_and_exec(t_command *cmd, int nb_opt,\
-	int opt_flag, char**argv);
+void 				get_params_hash_function(t_command *, t_list*, int);
+void				run_parameters_and_exec(t_command *cmd, t_list *parameters, int opt_flag);
 void				exec_command(t_data *target, t_command *cmd, int opt_flag);
 void				exec_read_stdin(t_command *cmd, int opt_flag);
 
 void				base64(t_data *info);
 
 void	display_base64(t_data *info, t_command *cmd);
-void 				get_params_base64(t_command *cmd, char**argv);
+void 				get_params_base64(t_command *, t_list*, int);
 void		base64_handle_parameters_and_exec(t_command *cmd, int nb_opt,\
 	int opt_flag, char **argv);
+t_list	*get_params(char **argv, int argc, int index, int *flag);
 
 #endif

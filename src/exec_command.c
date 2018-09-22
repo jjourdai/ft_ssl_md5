@@ -79,7 +79,6 @@ void			exec_command(t_data *target, t_command *cmd, int opt_flag)
 	if (opt_flag & F_ECHO)
 		exec_read_stdin(cmd, opt_flag);
 	target->flag = opt_flag;
-
 	if (target->param_type == FILE_)
 	{
 		if (get_file_bytes(target, cmd) != ERROR)

@@ -13,67 +13,35 @@
 #include <ssl.h>
 #include <colors.h>
 
-static void		get_flag(t_data *target, char **argv, int *opt_flag)
+static void		fill_target_struct(t_data *target, t_list *parameters, int opt_flag)
 {
-	int		i;
-	int		j;
-	char 	c;
+	t_list			*tmp;
+	t_parameters	*current;
 
-	i = 1;
+	tmp = parameters;	
 	target->param_type = STDIN_;
-	while (argv[++i])
+	while (tmp)
 	{
-		j = 1;
-		if (argv[i][0] == '-')
-		{
-			while ((c = argv[i][j]))
-			{
-				if (c == 'd')
-				(*opt_flag) |= F_DECODE;
-				else if (c == 'e')
-				(*opt_flag) |= F_ENCODE;
-				else if (c == 'i' || c == 'o')
-				{
-					if (argv[i + 1] == NULL)
-					{
-						ft_fprintf(STDERR_FILENO, RED_TEXT("ft_ssl base64: options"
-						" '-%c' required an argument.\n"), c);
-						exit(EXIT_FAILURE);
-					}
-					if (c == 'i')
-					{
-						target->param_type = FILE_;
-						target->string = argv[i + 1];
-					}
-					else
-					target->fd = open((char*)argv[i + 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-				}
-				else
-				{
-					ft_fprintf(STDERR_FILENO, RED_TEXT("ft_ssl base64: '-%c' is an "
-					"invalid option/flag.\n"), c);
-					exit(EXIT_FAILURE);
-				}
-				j++;
-			}
-		}
-		else
+		current = (t_parameters*)tmp->content;
+		if (current->type == F_OUPUT)
+			target->fd = open(current->str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		else if (current->type == F_INPUT || current->type == NONE_)
 		{
 			target->param_type = FILE_;
-			target->string = argv[i];
+			target->string = current->str;
 		}
+		tmp = tmp->next;
 	}
+	ft_lstdel(&parameters, ft_del);
 }
 
-void 				get_params_base64(t_command *cmd, char**argv)
+void 				get_params_base64(t_command *cmd, t_list *parameters, int opt_flag)
 {
-	int	opt_flag;
 	t_data target;
 
-	opt_flag = 0;
 	ft_bzero(&target, sizeof(target));
 	target.fd = STDOUT_FILENO;
-	get_flag(&target, argv, &opt_flag);
+	fill_target_struct(&target, parameters, opt_flag);
 	if (target.param_type == STDIN_)
 		exec_read_stdin(cmd, opt_flag);
 	else

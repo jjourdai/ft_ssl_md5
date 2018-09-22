@@ -56,12 +56,17 @@ void	base64_decode(t_data *info)
 		info->len--;
 	new_len = info->len / 4 * 3;
 	while (++i < info->len)
+	{
+		if ((i + 1) % 65 == 0 && info->bytes[i] == '\n')
+			continue ;
 		info->bytes[i] = return_value(info, info->bytes[i], &equal);
+	}
 	new_str = ft_memalloc(new_len + 1);
 	i = 0;
 	j = 0;
 	while (j < info->len)
 	{
+	//	if ((j + 1) % 65 == 0 && info->bytes[j + 1] == '\n')
 		intermediate = SWAP_VALUE(*((uint32_t*)&info->bytes[j]));
 		test = (0x3f000000 & intermediate) >> 6 | (0x3f0000 & intermediate) >> 4 | (0x3f00 & intermediate) >> 2 | (0x3f & intermediate);
 		new_str[i] = ((0xff0000 & test)) >> 16;

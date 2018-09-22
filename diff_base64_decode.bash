@@ -7,8 +7,8 @@ for i in `seq 0 $nb`;
 do
 	cat /dev/urandom | head -c 4000 > random.txt && base64 random.txt > KoolRasta
 
-	echo $(cat KoolRasta) | ./ft_ssl base64 -d > test1
-	echo $(cat KoolRasta) | base64 -D > test2
+	echo $(cat KoolRasta) | ./ft_ssl base64 -d | xxd > test1
+	echo $(cat KoolRasta) | base64 -D | xxd > test2
 	diff -u test1 test2
 
 	cat /dev/urandom | head -c 4001 > random.txt && base64 random.txt > KoolRasta

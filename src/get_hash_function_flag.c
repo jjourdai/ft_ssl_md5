@@ -13,6 +13,8 @@
 #include <ssl.h>
 #include <colors.h>
 
+/*
+
 static t_bool	store_flag(t_command *cmd, char *str, int *opt_flag, int j)
 {
 	char	c;
@@ -56,12 +58,12 @@ static int		get_flag(t_command *cmd, char **argv, int *opt_flag)
 	return (nb_opt);
 }
 
-void 				get_params_hash_function(t_command *cmd, char**argv)
+void 				get_params_hash_function(t_command *cmd, t_list *parameters, int opt_flag)
 {
 	int	nb_opt;
-	int	opt_flag;
 
 	opt_flag = 0;
 	nb_opt = get_flag(cmd, argv, &opt_flag);
 	hash_f_handle_parameters_and_exec(cmd, nb_opt, opt_flag, argv);
 }
+*/

@@ -33,31 +33,38 @@ static int	get_parameters(char **argv, t_data *target, int *already_get,\
 	else
 	{
 		*already_get = 1;
-		target->string = (uint8_t*)argv[*i];
-		target->param_type = FILE_;
-		return (1);
+				return (1);
 	}
 	return (0);
 }
 
-void		hash_f_handle_parameters_and_exec(t_command *cmd, int nb_opt,\
-	int opt_flag, char **argv)
+void		run_parameters_and_exec(t_command *cmd, t_list *parameters, int opt_flag)
 {
-	int		i;
-	int		nb_target;
-	int		already_get;
+	t_list			*tmp;
+	t_parameters	*current;
 	t_data	target;
 
-	i = nb_opt + 2;
-	nb_target = 0;
-	already_get = 0;
-	while (argv[i])
+	tmp = parameters;	
+	target.param_type = STDIN_;
+	while (tmp)
 	{
 		ft_bzero(&target, sizeof(t_data));
-		nb_target += get_parameters(argv, &target, &already_get, &i);
+		current = (t_parameters*)tmp->content;
+		if (current->type == F_STRING)
+		{
+			target.bytes = (uint8_t*)current->str;
+			target.param_type = STRING_;
+			target.string = (uint8_t*)current->str;
+		}
+		else
+		{
+			target.string = (uint8_t*)current->str;
+			target.param_type = FILE_;
+		}
 		exec_command(&target, cmd, opt_flag);
-		i++;
+		tmp = tmp->next;
 	}
-	if (nb_target == 0)
+	if (parameters == NULL)
 		exec_read_stdin(cmd, opt_flag);
+	ft_lstdel(&parameters, ft_del);
 }
