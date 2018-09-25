@@ -12,11 +12,11 @@
 
 #include "libft.h"
 
-void	print_bits(long long octet)
+void	print_bits(int64_t octet)
 {
-	int n;
+	int8_t n;
 
-	n = octet & 1llu;
+	n = octet & 1;
 	if (n == 1)
 		ft_printf("1");
 	else

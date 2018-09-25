@@ -19,6 +19,12 @@
 # include "fcntl.h"
 # include "errno.h"
 
+# define L_ROT_64(X, C) ((X << C) | (X >> (64 - C)))
+# define R_ROT_64(X, C) ((X >> C) | (X << (64 - C)))
+
+# define L_ROT_28(X, C) ((X << C) | (X >> (28 - C)))
+# define R_ROT_28(X, C) ((X >> C) | (X << (28 - C)))
+
 # define L_ROT(X, C) ((X << C) | (X >> (32 - C)))
 # define R_ROT(X, C) ((X >> C) | (X << (32 - C)))
 # define SWAP_VALUE(X) swap_bigendian_littleendian(X, sizeof(X))

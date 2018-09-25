@@ -155,7 +155,7 @@ char				*ft_strchr_base(char *str, char *base);
 size_t				ft_strwlen(const wchar_t *s);
 unsigned int		ft_int_size(int c);
 char				*ft_strjoin_free(char *s1, char *s2, int free_s1_or_s2);
-void				print_bits(long long octet);
+void				print_bits(int64_t octet);
 size_t				ft_wcrtomb(char *s, wchar_t d);
 void				ft_putnstr(char *str, size_t n);
 void				ft_putbuf(char *dest, const char *src, int *len_buf);
