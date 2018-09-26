@@ -24,6 +24,10 @@ SRC_NAME = main.c \
 			param.c \
 			des.c \
 			keys.c \
+			des_encode.c \
+			des_decode.c \
+			core_des.c \
+
 
 OBJ_PATH = ./.obj/
 
