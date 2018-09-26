@@ -68,7 +68,6 @@ void			exec_read_stdin(t_command *cmd, int opt_flag)
 	stdin_input.fd = STDOUT_FILENO;
 	if (read_fd(&stdin_input, STDIN_FILENO) == DATA_RECEIVED)
 	{
-		// g_dispatcher[command](&stdin_input);
 		cmd->exec_command(&stdin_input);
 		cmd->display(&stdin_input, cmd);
 	}

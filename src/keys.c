@@ -102,8 +102,8 @@ void	get_keys(uint64_t keys[16], char *key, size_t len)
 
 	ft_memcpy(padded_key, key, len);
 	base_key = *((uint64_t*)padded_key);
-	base_key = 0x626F6E2020202020;
-	// base_key = 0x133457799BBCDFF1;
+	// base_key = 0x626F6E2020202020;
+	base_key = 0x133457799BBCDFF1;
 	block = pass_cp1(base_key);
 	split_then_pass_cp2(keys, block);
 	// ft_printf("%056llb\n", block);

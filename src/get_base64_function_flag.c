@@ -18,7 +18,7 @@ static void		fill_target_struct(t_data *target, t_list *parameters, int opt_flag
 	t_list			*tmp;
 	t_parameters	*current;
 
-	tmp = parameters;	
+	tmp = parameters;
 	target->param_type = STDIN_;
 	while (tmp)
 	{

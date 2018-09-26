@@ -88,7 +88,7 @@ enum 	e_des {
 
 
 typedef struct		s_data {
-	uint8_t			flag;
+	uint16_t			flag;
 	uint8_t			param_type;
 	uint8_t			*string;
 	uint8_t			*bytes;

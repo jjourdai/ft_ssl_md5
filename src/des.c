@@ -14,54 +14,89 @@
 
 void	display_des(t_data *info, t_command *cmd)
 {
-
-
+	write(info->fd, info->bytes, info->len);
 }
 
-void run_des_parameters_and_exec(t_command *cmd, t_list *parameters, int opt_flag)
+// void run_des_parameters_and_exec(t_command *cmd, t_list *parameters, int opt_flag)
+// {
+// 	t_list			*tmp;
+// 	t_parameters	*current;
+// 	t_data	target;
+//
+// 	tmp = parameters;
+// 	target.param_type = STDIN_;
+// 	while (tmp)
+// 	{
+// 		/*
+// 		ft_bzero(&target, sizeof(t_data));
+// 		current = (t_parameters*)tmp->content;
+// 		if (current->type == F_STRING)
+// 		{
+// 			target.bytes = (uint8_t*)current->str;
+// 			target.param_type = STRING_;
+// 			target.string = (uint8_t*)current->str;
+// 		}
+// 		else
+// 		{
+// 			target.string = (uint8_t*)current->str;
+// 			target.param_type = FILE_;
+// 		}
+// 		exec_command(&target, cmd, opt_flag);
+// 		tmp = tmp->next;
+// 		*/
+// 	}
+// 	if (parameters == NULL)
+// 		exec_read_stdin(cmd, opt_flag);
+// 	ft_lstdel(&parameters, ft_del);
+// }
+
+static void		fill_target_struct(t_data *target, t_list *parameters, int opt_flag)
 {
 	t_list			*tmp;
 	t_parameters	*current;
-	t_data	target;
 
 	tmp = parameters;
-	target.param_type = STDIN_;
+	target->param_type = STDIN_;
 	while (tmp)
 	{
-		/*
-		ft_bzero(&target, sizeof(t_data));
 		current = (t_parameters*)tmp->content;
-		if (current->type == F_STRING)
+		if (current->type == F_OUPUT)
+			target->fd = open(current->str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		else if (current->type == F_INPUT || current->type == NONE_)
 		{
-			target.bytes = (uint8_t*)current->str;
-			target.param_type = STRING_;
-			target.string = (uint8_t*)current->str;
+			target->param_type = FILE_;
+			target->string = current->str;
 		}
-		else
-		{
-			target.string = (uint8_t*)current->str;
-			target.param_type = FILE_;
-		}
-		exec_command(&target, cmd, opt_flag);
 		tmp = tmp->next;
-		*/
 	}
-	if (parameters == NULL)
-		exec_read_stdin(cmd, opt_flag);
 	ft_lstdel(&parameters, ft_del);
-
-
 }
 
-static int ip[] = {
-	58, 50, 42, 34, 26, 18, 10, 2, // 2
-	60, 52, 44, 36, 28, 20, 12, 4, // 4
-	62, 54, 46, 38, 30, 22, 14, 6, // 6
-	64, 56, 48, 40, 32, 24, 16, 8, // 8
-	57, 49, 41, 33, 25, 17, 9, 1, //  1
-	59, 51, 43, 35, 27, 19, 11, 3, // 3
-	61, 53, 45, 37, 29, 21, 13, 5, // 5
-	63, 55, 47, 39, 31, 23, 15, 7 //  7
+void 				run_des_parameters_and_exec(t_command *cmd, t_list *parameters, int opt_flag)
+{
+	t_data target;
+
+	ft_bzero(&target, sizeof(target));
+	target.fd = STDOUT_FILENO;
+	fill_target_struct(&target, parameters, opt_flag);
+	if (target.param_type == STDIN_)
+		exec_read_stdin(cmd, opt_flag);
+	else
+		exec_command(&target, cmd, opt_flag);
+	if (target.fd != STDOUT_FILENO && target.fd != -1)
+		close(target.fd);
+}
+
+
+static const int ip[] = {
+	58, 50, 42, 34, 26, 18, 10, 2,
+	60, 52, 44, 36, 28, 20, 12, 4,
+	62, 54, 46, 38, 30, 22, 14, 6,
+	64, 56, 48, 40, 32, 24, 16, 8,
+	57, 49, 41, 33, 25, 17, 9, 1,
+	59, 51, 43, 35, 27, 19, 11, 3,
+	61, 53, 45, 37, 29, 21, 13, 5,
+	63, 55, 47, 39, 31, 23, 15, 7
 };
 
 uint64_t	initial_permutation(char *bytes)
@@ -72,7 +107,11 @@ uint64_t	initial_permutation(char *bytes)
 
 
 	new_block = 0;
-	old_block = SWAP_VALUE(*((uint64_t*)bytes));
+	old_block = *((uint64_t*)bytes);
+	// old_block = 0x0123456789ABCDEF;
+	// old_block = 0x85e813540f0ab405;
+	// old_block = 0xfe518bb41c352ee4;
+
 
 	block = 0;
 	for (int i = 0; i < 64; i++)
@@ -82,7 +121,7 @@ uint64_t	initial_permutation(char *bytes)
 		else
 			block |= ((1ll << (64 - ip[i])) & old_block) >> (i + 1 - ip[i]);
 	}
-	ft_printf("%064llb\n", block);
+	// ft_printf("%064llb\n", block);
 	return (block);
 }
 
@@ -176,7 +215,6 @@ uint64_t substitutions(uint64_t d0)
 {
 	//int test = 0x2e;
 	//int test = value & 0x3f;
-
 	int line;
 	int col;
 	uint32_t value;
@@ -185,107 +223,227 @@ uint64_t substitutions(uint64_t d0)
 	new_value = 0;
 	i = -1;
 	uint64_t padding = 0xFC0000000000;
+	// ft_printf("%llx\n", d0);
 	while (++i < 8)
 	{
-		ft_printf("llx %lld\n", (7 - i) * 6);
+		// ft_printf("--->>>>>>>>>>>%llx\n", (padding & d0));
 		value = (padding & d0) >> ((7 - i) * 6);
-		ft_printf("%llb\n", (value));
 		padding = padding >> 6;
-		// -1110010011110110010010011000101
-
-		// value = d0 & 0x3f;
-		// value = tab[7 - i];
-		// ft_printf("%d\n", value);
 		line = ((1 << 5) & value) >> 4 | (1 & value);
 		col = (0x1e & value) >> 1;
 		new_value |= (substitutions_value[i][line][col]);
 		if (i != 7)
 			new_value = new_value << 4;
-		d0 = d0 >> 6;
-		//ft_printf("new value %llx\n", new_value);
+		// ft_printf("%lld %d %llb\n", value, i, new_value);
 	}
-	ft_printf("new value %032llb\n", new_value);
-	// ft_putendl("substitutions");
-	// print_bits(new_value);
-	// print_bits(SWAP_VALUE(new_value));
-	// ft_printf("OMG %lld\n", SWAP_VALUE(new_value));
-	// ft_printf("OMG %lld\n", new_value);
-	// uint64_t	block;
-	// uint64_t	old_block;
-	// new_value = 4068156613;
-	// new_value = SWAP_VALUE(new_value);
-	// ft_printf("%lld\n", new_value);
-	// old_block = new_value;
-	// new_value = 0;
-	// for (int i = 8; i > 0; i--)
-  //   {
-  //       new_value |= (((1 << 0) & old_block) << 7 | ((1 << 1) & old_block) << 5 | ((1 << 2) & old_block) << 3 | ((1 << 3) & old_block) << 1 | ((1 << 4) & old_block) >> 1 | ((1 << 5) & old_block) >> 3 | ((1 << 6) & old_block) >> 5 | ((1 << 7) & old_block) >> 7) << 8 * (8 - i);
-  //       old_block = old_block >> 8;
-  //   }
-	// ft_printf("%lld\n", new_value);
-	// print_bits(new_value);
-	// block = 0;
-	// for (int i = 0; i < 32; i++)
-	// {
-	// 	if (perm[i] - i - 1 > 0)
-	// 		block |= ((1ll << (perm[i] - 1)) & new_value) >> (perm[i] - i - 1);
-	// 	else
-	// 		block |= ((1ll << (perm[i] - 1)) & new_value) << (i + 1 - perm[i]);
-	// }
-	// ft_putendl("After P");
-	// print_bits(block);
-	// return (block);
+	// tour 1 11110010011110110010010011000101
+	// ft_printf("new value %032llb\n", new_value);
+	uint64_t	block;
+
+	block = 0;
+	for (int i = 0; i < 32; i++)
+	{
+		if (perm[i] - i - 1 > 0)
+			block |= ((1ll << (32 - perm[i])) & new_value) << (perm[i] - i - 1);
+		else
+			block |= ((1ll << (32 - perm[i])) & new_value) >> (i + 1 - perm[i]);
+	}
+	// ft_printf("permuted value = %032llb\n", block);
+	return (block);
 
 }
 
-void 	des(t_data *info)
+uint64_t 	main_loop(uint64_t keys[16], uint32_t left, uint64_t right)
+{
+	uint64_t	subkey;
+	uint64_t	exp;
+	uint64_t	tmp_right;
+	uint64_t	tmp_left;
+	uint64_t	d0;
+	uint64_t	p;
+	size_t		i;
+
+	i = -1;
+	while (++i < 16)
+	{
+		// ft_putendl("==========================");
+		exp = expansion(right);
+		// ft_printf("expansion %048llb\n", exp);
+		subkey = keys[i];
+		// ft_printf("subkey %048llb\n", subkey);
+		d0 = exp ^ subkey;
+		// ft_printf("subkey %llx\n", subkey);
+		p = substitutions(d0);
+		// ft_printf("PPP %032llb\n", p);
+		tmp_right = left ^ p;
+		tmp_left = right;
+		right = tmp_right;
+		left = tmp_left;
+		// ft_printf("right1 %032llb\n", right);
+		// ft_printf("left1 %032llb\n", left);
+		// ft_putendl("==========================");
+		// if (4 == i)
+		// 	break ;
+	}
+	return ((0xffffffff & left) | ((0xffffffff & right) << 32));
+}
+
+static const int ipr[] = {
+	40,	8,	48,	16,	56,	24,	64,	32,
+	39,	7,	47,	15,	55,	23,	63,	31,
+	38,	6,  46,	14,	54,	22,	62,	30,
+	37,	5,	45,	13,	53,	21,	61,	29,
+	36,	4,	44,	12,	52,	20,	60,	28,
+	35,	3,	43,	11,	51,	19,	59,	27,
+	34,	2,	42,	10,	50,	18,	58,	26,
+	33,	1,	41,	9,	49,	17,	57,	25,
+};
+
+uint64_t reverse_permutation(uint64_t old_block)
+{
+	uint64_t block;
+
+	block = 0;
+	for (int i = 0; i < 64; i++)
+	{
+		if (ipr[i] - i - 1 > 0)
+			block |= ((1ll << (64 - ipr[i])) & old_block) << (ipr[i] - i - 1);
+		else
+			block |= ((1ll << (64 - ipr[i])) & old_block) >> (i + 1 - ipr[i]);
+	}
+	return (block);
+}
+
+void put_padding_character(t_data *info)
+{
+	if (info->len % 8)
+		info->len += 8 - (info->len % 8);
+}
+
+void 	des_encrypt(t_data *info)
 {
 	char *key = "bon";
-	uint64_t my_keys[16];
+	uint64_t keys[16];
 
-	ft_bzero(my_keys, sizeof(my_keys));
-	get_keys(my_keys, key, 3);
-	char *string = "exemple de cryptage en DES";
+	size_t i;
+	// size_t len = ft_strlen("exemple de cryptage en D");
+	char *encrypted_string;
 
-	uint64_t block = initial_permutation(string);
-	uint32_t left;
-	uint32_t right;
+	// ft_printf("%lld\n", info->len);
+	// ft_putendl(info->bytes);
+	put_padding_character(info);
+	encrypted_string = ft_memalloc(info->len + 1);
+	i = 0;
+	while (i != info->len)
+	{
+		ft_bzero(keys, sizeof(keys));
+		get_keys(keys, key, 3);
+		// char *string = "exemple de cryptage en D";
 
-	right = (0xFFFFFFFF00000000 & block) >> 32;
-	left = (0xFFFFFFFF & block);
+		uint64_t block = initial_permutation(info->bytes + i);
+		uint32_t left;
+		uint32_t right;
 
-	ft_printf("R %032llb\n", right);
-	ft_printf("L %032llb\n", left);
-
-	uint64_t subkey;
-	uint64_t exp;
-
-
-	exp = expansion(left);
-	subkey = my_keys[0];
-	ft_printf("expansion %048llb\n", exp);
-	ft_printf("subkey %048llb\n", subkey);
-
-	uint64_t d0;
-
-	d0 = exp ^ subkey;
-	uint64_t p = substitutions(d0);
-	// uint64_t d1 = left ^ p;
-	// ft_putendl("d1");
-	// print_bits(d1);
-//	uint64_t g1 = right;
-//	ft_putendl("g1");
-//	print_bits(g1);
+		left = (0xFFFFFFFF00000000 & block) >> 32;
+		right = (0xFFFFFFFF & block);
+		block = main_loop(keys, left, right);
+		// ft_printf("bef ipr = %064llb\n", block);
+		block = reverse_permutation(block);
+		char *result = (char*)(&block);
+		// ft_printf("result = %064llb\n", block);
+		// ft_printf("result = %llx\n", block);
+		// ft_putendl(result);
+		ft_memcpy(encrypted_string + i, result, 8);
+		i += 8;
+	}
+	info->bytes = encrypted_string;
+	// write(1, encrypted_string, info->len);
 }
 
+uint64_t 	main_loop_reverse(uint64_t keys[16], uint32_t left, uint64_t right)
+{
+	uint64_t	subkey;
+	uint64_t	exp;
+	uint64_t	tmp_right;
+	uint64_t	tmp_left;
+	uint64_t	d0;
+	uint64_t	p;
+	size_t		i;
 
+	i = 15;
+	while (1)
+	{
+		// ft_putendl("==========================");
+		exp = expansion(right);
+		// ft_printf("expansion %048llb\n", exp);
+		subkey = keys[i];
+		// ft_printf("subkey %048llb\n", subkey);
+		d0 = exp ^ subkey;
+		// ft_printf("subkey %llx\n", subkey);
+		p = substitutions(d0);
+		// ft_printf("PPP %032llb\n", p);
+		tmp_right = left ^ p;
+		tmp_left = right;
+		right = tmp_right;
+		left = tmp_left;
+		// ft_printf("right1 %032llb\n", right);
+		// ft_printf("left1 %032llb\n", left);
+		// ft_putendl("==========================");
+		if (i-- == 0)
+			break ;
+	}
+	return ((0xffffffff & left) | ((0xffffffff & right) << 32));
+}
 
+void 	des_decrypt(t_data *info)
+{
+	char *key = "bon";
+	uint64_t keys[16];
 
+	size_t i;
+	// size_t len = ft_strlen("exemple de cryptage en D");
+	char *encrypted_string;
 
+	// ft_printf("%lld\n", info->len);
+	// ft_putendl(info->bytes);
+	put_padding_character(info);
+	encrypted_string = ft_memalloc(info->len + 1);
+	i = 0;
+	while (i != info->len)
+	{
+		ft_bzero(keys, sizeof(keys));
+		get_keys(keys, key, 3);
+		// char *string = "exemple de cryptage en D";
 
+		uint64_t block = initial_permutation(info->bytes + i);
+		uint32_t left;
+		uint32_t right;
 
-
-
+		left = (0xFFFFFFFF00000000 & block) >> 32;
+		right = (0xFFFFFFFF & block);
+		block = main_loop_reverse(keys, left, right);
+		// ft_printf("bef ipr = %064llb\n", block);
+		block = reverse_permutation(block);
+		char *result = (char*)(&block);
+		// ft_printf("result = %064llb\n", block);
+		// ft_printf("result = %llx\n", block);
+		// ft_putendl(result);
+		ft_memcpy(encrypted_string + i, result, 8);
+		i += 8;
+	}
+	info->bytes = encrypted_string;
+}
+void 	des(t_data *info)
+{
+	if (info->flag & F_DECRYPT)
+	{
+		des_decrypt(info);
+	}
+	else if (info->flag & F_ENCRYPT)
+	{
+		des_encrypt(info);
+	}
+}
 
 
 
