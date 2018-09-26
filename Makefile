@@ -23,6 +23,7 @@ SRC_NAME = main.c \
 			 get_base64_function_flag.c \
 			param.c \
 			des.c \
+			keys.c \
 
 OBJ_PATH = ./.obj/
 
@@ -37,7 +38,7 @@ NAME = ft_ssl
 CC = gcc
 
 #CFLAGS = -Wall -Wextra -g -fsanitize=address
-CFLAGS = -Wall -Wextra -g 
+CFLAGS = -Wall -Wextra -g
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
 

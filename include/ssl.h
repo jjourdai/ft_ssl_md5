@@ -22,6 +22,9 @@
 # define L_ROT_64(X, C) ((X << C) | (X >> (64 - C)))
 # define R_ROT_64(X, C) ((X >> C) | (X << (64 - C)))
 
+# define L_ROT_56(X, C) ((X << C) | (X >> (56 - C)))
+# define R_ROT_56(X, C) ((X >> C) | (X << (56 - C)))
+
 # define L_ROT_28(X, C) ((X << C) | (X >> (28 - C)))
 # define R_ROT_28(X, C) ((X >> C) | (X << (28 - C)))
 
@@ -135,5 +138,7 @@ void				des(t_data *info);
 
 void	display_des(t_data *info, t_command *cmd);
 void	run_des_parameters_and_exec(t_command *, t_list *, int opt_flag);
+
+void get_keys(uint64_t keys[16], char *key, size_t len);
 
 #endif

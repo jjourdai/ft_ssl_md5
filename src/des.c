@@ -24,7 +24,7 @@ void run_des_parameters_and_exec(t_command *cmd, t_list *parameters, int opt_fla
 	t_parameters	*current;
 	t_data	target;
 
-	tmp = parameters;	
+	tmp = parameters;
 	target.param_type = STDIN_;
 	while (tmp)
 	{
@@ -54,7 +54,7 @@ void run_des_parameters_and_exec(t_command *cmd, t_list *parameters, int opt_fla
 }
 
 static int ip[] = {
-	58, 50, 42, 34, 26, 18, 10, 2, // 2 
+	58, 50, 42, 34, 26, 18, 10, 2, // 2
 	60, 52, 44, 36, 28, 20, 12, 4, // 4
 	62, 54, 46, 38, 30, 22, 14, 6, // 6
 	64, 56, 48, 40, 32, 24, 16, 8, // 8
@@ -66,115 +66,23 @@ static int ip[] = {
 
 uint64_t	initial_permutation(char *bytes)
 {
-	uint64_t	old_block; 
-	uint64_t	new_block; 
+	uint64_t	old_block;
+	uint64_t	new_block;
 	uint64_t	block;
 
 
 	new_block = 0;
-	old_block = *((uint64_t*)bytes);
-	for (int i = 8; i > 0; i--)
-    {
-        new_block |= (((1 << 0) & old_block) << 7 | ((1 << 1) & old_block) << 5 | ((1 << 2) & old_block) << 3 | ((1 << 3) & old_block) << 1 | ((1 << 4) & old_block) >> 1 | ((1 << 5) & old_block) >> 3 | ((1 << 6) & old_block) >> 5 | ((1 << 7) & old_block) >> 7) << 8 * (8 - i);
-        old_block = old_block >> 8;
-    }
-	old_block = new_block;
+	old_block = SWAP_VALUE(*((uint64_t*)bytes));
+
 	block = 0;
-	ft_putendl("old_block");
-	print_bits(old_block);
 	for (int i = 0; i < 64; i++)
 	{
 		if (ip[i] - i - 1 > 0)
-			block |= ((1ll << (ip[i] - 1)) & old_block) >> (ip[i] - i - 1);
+			block |= ((1ll << (64 - ip[i])) & old_block) << (ip[i] - i - 1);
 		else
-			block |= ((1ll << (ip[i] - 1)) & old_block) << (i + 1 - ip[i]);
-/*
-		if (ip[i] - i - 1 > 0)
-			printf("%llu\n", ((1ll << (ip[i] - 1)) & 0xFFFFFFFFFFFFFFFF) >> (ip[i] - i - 1));
-		else
-			printf("%llu\n", ((1ll << (ip[i] - 1)) & 0xFFFFFFFFFFFFFFFF) << (i + 1 - ip[i]));
-*/
+			block |= ((1ll << (64 - ip[i])) & old_block) >> (i + 1 - ip[i]);
 	}
-/*
-	int v;
-	for (int i = 0; i < 8; i++)
-	{
-		v = string_modify[i];
-		string_modify[i] = ((0x80 & v) >> 7) | (0x40 & v) >> 5 | (0x20 & v) >> 3 | (0x10 & v) >> 1 | ((0x8 & v) << 1) | (0x4 & v) << 3 | (0x2 & v) << 5 | (0x1 & v) << 7;
-	}
-*/
-
-	ft_putendl("block");
-	print_bits(block);
-	return (block);
-}
-
-static int cp1[] = {
-	57,	49,	41,	33,	25,	17,	9,	1,	
-	58, 50,	42,	34,	26,	18, 10,	2, 
-	59,	51, 43,	35,	27,	19,	11,	3,
-	60,	52,	44,	36, 63,	55,	47,	39,
-	31,	23,	15,	7, 62, 54, 46, 38,
-	30,	22, 14,	6,	61, 53, 45, 37,
-	29,	21,	13,	5,	28,	20,	12,	4,
-};
-
-static int cp2[] = {
-	14, 17,	11,	24,	1,	5,	3,	28,
-	15,	6,	21,	10, 23,	19,	12,	4,
-	26,	8,	16,	7,	27,	20,	13,	2,
-	41,	52,	31,	37,	47,	55,	30,	40,
-	51,	45,	33,	48, 44,	49,	39,	56,
-	34,	53,	46,	42,	50,	36,	29,	32,
-};
-
-uint64_t	handle_key(char *key, size_t len)
-{
-	static char	padded_key[8] = {0};
-
-	ft_memcpy(padded_key, key, len);
-	
-//	for (int i = 0; i < 8; i++)
-//		ft_printf("%08b\n", padded_key[i]);
-//	ft_putendl(NULL);
-	
-	uint64_t	old_block; 
-	uint64_t	block;
-
-	block = 0;
-	old_block = *((uint64_t*)padded_key);
-	old_block = 0x40404040476f646;
-//	print_bits(0x40404040476f646);
-	for (int i = 0; i < 56; i++)
-	{
-		if (cp1[i] - i - 1 > 0)
-			block |= ((1ll << (cp1[i] - 1)) & old_block) >> (cp1[i] - i - 1);
-		else
-			block |= ((1ll << (cp1[i] - 1)) & old_block) << (i + 1 - cp1[i]);
-	}
-	uint32_t left;
-	uint32_t right;
-	
-	left = (0xFFFFFFFF00000000 & block) >> 30;
-	right = (0x0FFFFFFF & block >> 2);
-	left = L_ROT(left, 1);
-	right = L_ROT(right, 1);
-	//print_bits(left);
-	//print_bits(right);
-	block = 0;
-
-	block = (0xffffffff & right) | ((0xFFFFFFFFFFFFFFFF & left) << 28);
-	//print_bits(block);
-
-	old_block = block;
-	block = 0;
-	for (int i = 0; i < 48; i++)
-	{
-		if (cp2[i] - i - 1 > 0)
-			block |= ((1ll << (cp2[i] - 1)) & old_block) >> (cp2[i] - i - 1);
-		else
-			block |= ((1ll << (cp2[i] - 1)) & old_block) << (i + 1 - cp2[i]);
-	}
+	ft_printf("%064llb\n", block);
 	return (block);
 }
 
@@ -194,18 +102,17 @@ uint64_t	expansion(uint32_t bytes)
 	uint64_t	block;
 
 	block = 0;
-
 	for (int i = 0; i < 48; i++)
 	{
 		if (exp[i] - i - 1 > 0)
-			block |= ((1ll << (exp[i] - 1)) & bytes) >> (exp[i] - i - 1);
+			block |= (((1ll << (32 - exp[i])) & bytes) << 16) << (exp[i] - i - 1);
 		else
-			block |= ((1ll << (exp[i] - 1)) & bytes) << (i + 1 - exp[i]);
+			block |= (((1ll << (32 - exp[i])) & bytes) << 16) >> (i + 1 - exp[i]);
+		// ft_printf("%d", ((1ll << (32 - exp[i])) & bytes) ? 1 : 0);
 	}
 	return (block);
 }
 
- 	//0	1	2	3	4	5	6	7	8	9	10	11	12	13	14	15
 static int substitutions_value[][4][16] = {
 	[0] = {
 		[0] = {14,	4,	13,	1,	2,	15,	11,	8,	3,	10,	6,	12,	5,	9,	0,	7},
@@ -275,100 +182,100 @@ uint64_t substitutions(uint64_t d0)
 	uint32_t value;
 	uint32_t new_value;
 	size_t i;
-	new_value = 0;	
+	new_value = 0;
 	i = -1;
-	print_bits(d0);
-	int padding = 0;
+	uint64_t padding = 0xFC0000000000;
 	while (++i < 8)
 	{
-		value = d0 & 0x3f;
+		ft_printf("llx %lld\n", (7 - i) * 6);
+		value = (padding & d0) >> ((7 - i) * 6);
+		ft_printf("%llb\n", (value));
+		padding = padding >> 6;
+		// -1110010011110110010010011000101
+
+		// value = d0 & 0x3f;
+		// value = tab[7 - i];
+		// ft_printf("%d\n", value);
 		line = ((1 << 5) & value) >> 4 | (1 & value);
 		col = (0x1e & value) >> 1;
-		new_value |= (substitutions_value[i][line][col]) << padding;;
-//		print_bits(substitutions_value[i][line][col]);
-//		ft_printf("subb %lld\n", substitutions_value[i][line][col]);
-		padding += 4;
-		//if (i != 7)
-		//	new_value = new_value << 4;
+		new_value |= (substitutions_value[i][line][col]);
+		if (i != 7)
+			new_value = new_value << 4;
 		d0 = d0 >> 6;
 		//ft_printf("new value %llx\n", new_value);
 	}
-	ft_putendl("substitutions");
-	print_bits(new_value);
-	print_bits(SWAP_VALUE(new_value));
-	ft_printf("OMG %lld\n", SWAP_VALUE(new_value));
-	ft_printf("OMG %lld\n", new_value);
-	uint64_t	block;
-	uint64_t	old_block;
-	new_value = 4068156613;
-	new_value = SWAP_VALUE(new_value);
-	ft_printf("%lld\n", new_value);
-	old_block = new_value;
-	new_value = 0;
-	for (int i = 8; i > 0; i--)
-    {
-        new_value |= (((1 << 0) & old_block) << 7 | ((1 << 1) & old_block) << 5 | ((1 << 2) & old_block) << 3 | ((1 << 3) & old_block) << 1 | ((1 << 4) & old_block) >> 1 | ((1 << 5) & old_block) >> 3 | ((1 << 6) & old_block) >> 5 | ((1 << 7) & old_block) >> 7) << 8 * (8 - i);
-        old_block = old_block >> 8;
-    }
-	ft_printf("%lld\n", new_value);
-	print_bits(new_value);
-	block = 0;
-	for (int i = 0; i < 32; i++)
-	{
-		if (perm[i] - i - 1 > 0)
-			block |= ((1ll << (perm[i] - 1)) & new_value) >> (perm[i] - i - 1);
-		else
-			block |= ((1ll << (perm[i] - 1)) & new_value) << (i + 1 - perm[i]);
-	}
-	ft_putendl("After P");
-	print_bits(block);
-	return (block);
+	ft_printf("new value %032llb\n", new_value);
+	// ft_putendl("substitutions");
+	// print_bits(new_value);
+	// print_bits(SWAP_VALUE(new_value));
+	// ft_printf("OMG %lld\n", SWAP_VALUE(new_value));
+	// ft_printf("OMG %lld\n", new_value);
+	// uint64_t	block;
+	// uint64_t	old_block;
+	// new_value = 4068156613;
+	// new_value = SWAP_VALUE(new_value);
+	// ft_printf("%lld\n", new_value);
+	// old_block = new_value;
+	// new_value = 0;
+	// for (int i = 8; i > 0; i--)
+  //   {
+  //       new_value |= (((1 << 0) & old_block) << 7 | ((1 << 1) & old_block) << 5 | ((1 << 2) & old_block) << 3 | ((1 << 3) & old_block) << 1 | ((1 << 4) & old_block) >> 1 | ((1 << 5) & old_block) >> 3 | ((1 << 6) & old_block) >> 5 | ((1 << 7) & old_block) >> 7) << 8 * (8 - i);
+  //       old_block = old_block >> 8;
+  //   }
+	// ft_printf("%lld\n", new_value);
+	// print_bits(new_value);
+	// block = 0;
+	// for (int i = 0; i < 32; i++)
+	// {
+	// 	if (perm[i] - i - 1 > 0)
+	// 		block |= ((1ll << (perm[i] - 1)) & new_value) >> (perm[i] - i - 1);
+	// 	else
+	// 		block |= ((1ll << (perm[i] - 1)) & new_value) << (i + 1 - perm[i]);
+	// }
+	// ft_putendl("After P");
+	// print_bits(block);
+	// return (block);
 
 }
 
 void 	des(t_data *info)
 {
 	char *key = "bon";
+	uint64_t my_keys[16];
 
+	ft_bzero(my_keys, sizeof(my_keys));
+	get_keys(my_keys, key, 3);
 	char *string = "exemple de cryptage en DES";
 
 	uint64_t block = initial_permutation(string);
-
 	uint32_t left;
 	uint32_t right;
 
 	right = (0xFFFFFFFF00000000 & block) >> 32;
 	left = (0xFFFFFFFF & block);
 
-	ft_putendl("left");
-	print_bits(left);
-	ft_putendl("right");
-	print_bits(right);
-	
+	ft_printf("R %032llb\n", right);
+	ft_printf("L %032llb\n", left);
 
 	uint64_t subkey;
 	uint64_t exp;
 
-	exp = expansion(right);
-	subkey = handle_key(key, 3);
-	ft_putendl("expansion");
-	print_bits(exp);
-	ft_putendl("subkey");
-	print_bits(subkey);
+
+	exp = expansion(left);
+	subkey = my_keys[0];
+	ft_printf("expansion %048llb\n", exp);
+	ft_printf("subkey %048llb\n", subkey);
 
 	uint64_t d0;
 
 	d0 = exp ^ subkey;
-	ft_putendl("d0");
-	print_bits(d0);	
 	uint64_t p = substitutions(d0);
-	
-	uint64_t d1 = left ^ p;
-	ft_putendl("d1");
-	print_bits(d1); 	
+	// uint64_t d1 = left ^ p;
+	// ft_putendl("d1");
+	// print_bits(d1);
 //	uint64_t g1 = right;
 //	ft_putendl("g1");
-//	print_bits(g1); 	
+//	print_bits(g1);
 }
 
 
