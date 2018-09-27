@@ -195,6 +195,7 @@ int (cmpf)(void*, void*));
 void				*btree_search_item(t_btree *root, void *data_ref,
 int	(*cmpf)(void *, void*));
 int					btree_level_count(t_btree *root);
+uint64_t			ft_atoi_base_64(char *str, char *base);
 uint64_t			swap_bigendian_littleendian(uint64_t number, \
 	size_t sizeoff);
 #endif

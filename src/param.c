@@ -52,7 +52,7 @@ static t_option base64_opt[][256] = {
 		{NULL, 0, 0, NULL},
 	},
 	[DES] = {
-		{"", 'a', F_LOL, NULL},
+		{"base64", 'a', F_BASE64, NULL},
 		{"decrypt", 'd', F_DECRYPT, NULL},
 		{"encrypt", 'e', F_ENCRYPT, NULL},
 		{"input", 'i', F_INPUT, store_parameters},

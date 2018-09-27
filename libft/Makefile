@@ -6,7 +6,7 @@
 #    By: jjourdai <jjourdai@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/01/17 13:28:01 by jjourdai          #+#    #+#              #
-#    Updated: 2018/09/12 12:32:28 by jjourdai         ###   ########.fr        #
+#    Updated: 2018/09/27 16:18:25 by jjourdai         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,7 +43,7 @@ SRC_NAME = ft_memalloc.c ft_strcat.c ft_strncmp.c \
 	   ft_count_less.c ft_insertion_sort.c ft_quick_sort.c ft_str_is_only_digit.c \
 	   ft_is.c ft_count_char.c ft_split.c ft_atoi_base.c \
 	   ft_parser_flag.c ft_lstadd_back.c ft_swap_tab_int.c ft_is_this_char.c ft_strnstraf.c \
-	   ft_realloc.c btree_create_node.c btree_search_item.c endian.c \
+	   ft_realloc.c btree_create_node.c btree_search_item.c endian.c ft_atoi_base_64.c \
 
 OBJ_PATH = .obj/
 

@@ -6,7 +6,7 @@
 /*   By: jjourdai <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/26 17:52:23 by jjourdai          #+#    #+#             */
-/*   Updated: 2018/09/26 17:54:28 by jjourdai         ###   ########.fr       */
+/*   Updated: 2018/09/27 11:12:42 by jjourdai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,12 @@ uint64_t	initial_permutation(char *bytes)
 
 
 	new_block = 0;
-	old_block = *((uint64_t*)bytes);
-
+	old_block = SWAP_VALUE(*((uint64_t*)bytes));
+	// old_block = 0x0123456789ABCDEF;
+	// ft_printf("here %llX\n", old_block);
+	// 70696C2072756F59
+	// 596F7572206C6970
+	// 596F7572206C6970 732061726520736D 6F6F746865722074 68616E2076617365 6C696E650D0A
 
 	block = 0;
 	for (int i = 0; i < 64; i++)
@@ -161,7 +165,6 @@ uint64_t substitutions(uint64_t d0)
 			block |= ((1ll << (32 - perm[i])) & new_value) >> (i + 1 - perm[i]);
 	}
 	return (block);
-
 }
 
 static const int ipr[] = {

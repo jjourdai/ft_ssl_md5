@@ -6,7 +6,7 @@
 /*   By: jjourdai <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/22 14:43:53 by jjourdai          #+#    #+#             */
-/*   Updated: 2018/09/22 18:43:14 by jjourdai         ###   ########.fr       */
+/*   Updated: 2018/09/27 11:11:54 by jjourdai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,14 +96,16 @@ uint64_t	split_then_pass_cp2(uint64_t keys[16], uint64_t old_block)
 
 void	get_keys(uint64_t keys[16], char *key, size_t len)
 {
-	static char	padded_key[8] = {0};
 	uint64_t	base_key;
 	uint64_t	block;
 
-	ft_memcpy(padded_key, key, len);
-	base_key = *((uint64_t*)padded_key);
-	// base_key = 0x626F6E2020202020;
-	base_key = 0x133457799BBCDFF1;
+	if (ft_strlen(key) > 16)
+		key[16] = 0;
+	if (!(base_key = ft_atoi_base_64(key, "0123456789ABCDEF")))
+	{
+		ft_fprintf(STDERR_FILENO, "ft_ssl des: non-hex digit\n"
+			"invalid hex key value");
+	}
 	block = pass_cp1(base_key);
 	split_then_pass_cp2(keys, block);
 	// ft_printf("%056llb\n", block);

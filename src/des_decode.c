@@ -39,32 +39,80 @@ static uint64_t 	main_loop_reverse(uint64_t keys[16], uint32_t left, uint64_t ri
 	return ((0xffffffff & left) | ((0xffffffff & right) << 32));
 }
 
+void 	check_if_corrupted(t_data *info)
+{
+	if (info->len % 8)
+	{
+		ft_fprintf(STDERR_FILENO, "ft_ssl des: wrong final block length\n");
+		exit(-1);
+	}
+}
+
+void 	check_if_corrupted_padding_after_decrypt(t_data *info)
+{
+	char *ptr;
+	size_t	i;
+	uint32_t value;
+	uint32_t previous_value;
+	uint32_t quantity;
+
+	ft_putendl(info->bytes + info->len - 8);
+
+	ptr = info->bytes + info->len;
+	i = 1;
+	quantity = 1;
+	previous_value = 0;
+	while (++i < 9)
+	{
+		value = *(ptr - i);
+		// ft_printf("%d %d\n", previous_value, value);
+		if (previous_value != 0 && value != previous_value)
+		{
+			if (previous_value != quantity)
+			{
+				ft_fprintf(STDERR_FILENO, "ft_ssl des: wrong final block length\n");
+				exit(-1);
+			}
+			else
+				break ;
+		}
+		previous_value = value;
+		quantity++;
+	}
+	info->len = info->len - quantity;
+}
+
 void 	des_decrypt(t_data *info)
 {
-	char *key = "bon";
 	uint64_t keys[16];
-
 	size_t i;
 	char *encrypted_string;
 
-	put_padding_character(info);
+	if (info->flag & F_BASE64)
+		base64_decode(info);
+	//rajouter une fonction ici pour generer la clef si info->key == NULL
+	check_if_corrupted(info);
 	encrypted_string = ft_memalloc(info->len + 1);
 	i = 0;
+	ft_bzero(keys, sizeof(keys));
+	get_keys(keys, info->key, ft_strlen(info->key));
 	while (i != info->len)
 	{
-		ft_bzero(keys, sizeof(keys));
-		get_keys(keys, key, 3);
 		uint64_t block = initial_permutation(info->bytes + i);
 		uint32_t left;
 		uint32_t right;
-
 		left = (0xFFFFFFFF00000000 & block) >> 32;
 		right = (0xFFFFFFFF & block);
 		block = main_loop_reverse(keys, left, right);
-		block = reverse_permutation(block);
+		block = SWAP_VALUE(reverse_permutation(block));
 		char *result = (char*)(&block);
 		ft_memcpy(encrypted_string + i, result, 8);
 		i += 8;
 	}
+	// if (info->bytes != NULL && (info->param_type == FILE_ ||\
+	// 	info->param_type == STDIN_))
+	if (info->bytes != NULL)
+		free(info->bytes);
 	info->bytes = encrypted_string;
+	check_if_corrupted_padding_after_decrypt(info);
 }

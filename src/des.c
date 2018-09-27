@@ -15,6 +15,7 @@
 void	display_des(t_data *info, t_command *cmd)
 {
 	write(info->fd, info->bytes, info->len);
+	free(info->bytes);
 }
 
 static void		fill_target_struct(t_data *target, t_list *parameters, int opt_flag)
@@ -34,6 +35,10 @@ static void		fill_target_struct(t_data *target, t_list *parameters, int opt_flag
 			target->param_type = FILE_;
 			target->string = current->str;
 		}
+		else if (current->type & F_KEY)
+			target->key = current->str;
+		// else if (current->type & F_PASSWORD)
+		// 	target->password = current->str;
 		tmp = tmp->next;
 	}
 	ft_lstdel(&parameters, ft_del);
@@ -54,21 +59,10 @@ void 				run_des_parameters_and_exec(t_command *cmd, t_list *parameters, int opt
 		close(target.fd);
 }
 
-
-void put_padding_character(t_data *info)
-{
-	if (info->len % 8)
-		info->len += 8 - (info->len % 8);
-}
-
 void 	des(t_data *info)
 {
 	if (info->flag & F_DECRYPT)
-	{
 		des_decrypt(info);
-	}
 	else
-	{
 		des_encrypt(info);
-	}
 }

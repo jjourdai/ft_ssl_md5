@@ -72,7 +72,7 @@ enum 	e_base_64 {
 };
 
 enum 	e_des {
-	F_LOL = (1 << 8),
+	F_BASE64 = (1 << 8),
 	F_DECRYPT = (1 << 9),
 	F_ENCRYPT = (1 << 10),
 	F_KEY = (1 << 11),
@@ -92,6 +92,7 @@ typedef struct		s_data {
 	uint8_t			param_type;
 	uint8_t			*string;
 	uint8_t			*bytes;
+	uint8_t			*key;
 	uint64_t		len;
 	int				fd;
 	uint32_t		final_hash[8];
@@ -143,7 +144,7 @@ void get_keys(uint64_t keys[16], char *key, size_t len);
 void 	des_encrypt(t_data *info);
 void 	des_decrypt(t_data *info);
 
-void put_padding_character(t_data *info);
+// char *put_padding_character(t_data *info);
 uint64_t reverse_permutation(uint64_t old_block);
 uint64_t substitutions(uint64_t d0);
 uint64_t	initial_permutation(char *bytes);
