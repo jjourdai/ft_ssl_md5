@@ -113,11 +113,7 @@ void	get_keys(uint64_t keys[16], char *key, size_t len)
 		key[16] = 0;
 	}
 	if (!(base_key = ft_atoi_base_64(key, "0123456789ABCDEF")))
-	{
-		ft_fprintf(STDERR_FILENO, "ft_ssl des: non-hex digit\n"
-			"invalid hex key value");
-			exit(-1);
-	}
+		raise_error(DES, INVALID_KEY, NULL ,EXIT);
 	block = pass_cp1(base_key);
 	split_then_pass_cp2(keys, block);
 	// ft_printf("%056llb\n", block);

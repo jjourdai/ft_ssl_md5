@@ -83,7 +83,6 @@ t_parameters *shortname_opt(char **argv, int *i, int command, int *flag)
 			{
 				flag_has_found = 1;
 				*flag |= base64_opt[command][opt_index].flag;
-				//ft_printf("%c\n", c);
 				if (base64_opt[command][opt_index].f != NULL)
 				{
 					if (argv[*i][j + 1] != '\0')
@@ -91,20 +90,13 @@ t_parameters *shortname_opt(char **argv, int *i, int command, int *flag)
 					else if (argv[*i + 1] != NULL)
 						return (base64_opt[command][opt_index].f(argv[++(*i)], base64_opt[command][opt_index].flag));
 					else
-					{
-						ft_fprintf(STDERR_FILENO, "base64: option requires an argument -- %c\n", c);
-						exit(EXIT_FAILURE);
-					}
+						raise_error(command, REQUIRE_ARGUMENT, &c, EXIT);
 					return (NULL);
 				}
 			}
 		}
 		if (flag_has_found != 1)
-		{
-			ft_fprintf(STDERR_FILENO, "base64: invalid option -- %c\n", c);
-			exit(EXIT_FAILURE);
-		}
-		//ft_printf("%c\n", argv[i][j]);
+			raise_error(command, INVALID_OPTIONS, &c, EXIT);
 	}
 	return (NULL);
 }

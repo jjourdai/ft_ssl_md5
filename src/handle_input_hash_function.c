@@ -13,38 +13,13 @@
 #include "ssl.h"
 #include "colors.h"
 
-static int	get_parameters(char **argv, t_data *target, int *already_get,\
-	int *i)
-{
-	if (*already_get == 0 && ft_strcmp(argv[*i], "-s") == 0)
-	{
-		if (!argv[*i + 1] || argv[*i + 1][0] == '-')
-		{
-			ft_fprintf(STDERR_FILENO, RED_TEXT("./ft_ssl opt '-s' need a "
-				"string after him\n"));
-			exit(EXIT_FAILURE);
-		}
-		target->bytes = (uint8_t*)argv[*i + 1];
-		target->param_type = STRING_;
-		target->string = (uint8_t*)argv[*i + 1];
-		*i += 1;
-		return (1);
-	}
-	else
-	{
-		*already_get = 1;
-				return (1);
-	}
-	return (0);
-}
-
 void		run_parameters_and_exec(t_command *cmd, t_list *parameters, int opt_flag)
 {
 	t_list			*tmp;
 	t_parameters	*current;
 	t_data	target;
 
-	tmp = parameters;	
+	tmp = parameters;
 	target.param_type = STDIN_;
 	while (tmp)
 	{

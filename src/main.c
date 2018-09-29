@@ -30,8 +30,7 @@ static t_command *get_function(char *str)
 		if (ft_strcmp(cmd[i]->string, str) == 0)
 			return (cmd[i]);
 	}
-	ft_fprintf(STDERR_FILENO, RED_TEXT("ft_ssl: '%s' is an invalid "
-				"command.\n"), str);
+	raise_error(GENERAL, INVALID_COMMAND, str, EXIT);
 	return (NULL);
 }
 
@@ -42,9 +41,7 @@ int				main(int argc, char **argv)
 	int			flag;
 
 	if (argc == 1)
-		ft_putendl(RED_TEXT("usage: ft_ssl command [-pqrs] [command args]\n\n"
-			"Standard commands:\n\nMessage Digest commands:\nmd5\nsha256\n"
-			"\nCipher commands:\nbase64\ndes\ndes-ebc\ndes-cbc"));
+		raise_error(GENERAL, USAGE, NULL, EXIT);
 	else
 	{
 		if ((cmd = get_function(argv[1])) == NULL)

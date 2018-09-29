@@ -42,10 +42,7 @@ static uint64_t 	main_loop_reverse(uint64_t keys[16], uint32_t left, uint64_t ri
 void 	check_if_corrupted(t_data *info)
 {
 	if (info->len % 8)
-	{
-		ft_fprintf(STDERR_FILENO, "ft_ssl des: wrong final block length\n");
-		exit(-1);
-	}
+		raise_error(DES_ECB, WRONG_LENGTH, NULL, EXIT);
 }
 
 void 	check_if_corrupted_padding_after_decrypt(t_data *info)
@@ -68,9 +65,7 @@ void 	check_if_corrupted_padding_after_decrypt(t_data *info)
 		{
 			if (previous_value != quantity)
 			{
-				// ft_printf("%d %d\n", previous_value, quantity);
-				ft_fprintf(STDERR_FILENO, "ft_ssl des: wrong final block length\n");
-				exit(-1);
+				raise_error(DES_ECB, WRONG_LENGTH, NULL, EXIT);
 			}
 			else
 				break ;

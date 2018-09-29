@@ -19,7 +19,6 @@ SRC_NAME = main.c \
 			 display_hash.c \
 			 exec_command.c \
 			 base64.c \
-			 get_hash_function_flag.c \
 			 get_base64_function_flag.c \
 			param.c \
 			des.c \
@@ -27,6 +26,7 @@ SRC_NAME = main.c \
 			des_encode.c \
 			des_decode.c \
 			core_des.c \
+			error_msg.c \
 
 
 OBJ_PATH = ./.obj/

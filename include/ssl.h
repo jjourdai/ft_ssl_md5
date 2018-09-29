@@ -50,11 +50,23 @@ enum	e_param_type {
 	SHA256 = 1,
 	BASE64 = 2,
 	DES,
+	DES_ECB,
 	END,
 	FILE_,
 	STDIN_,
 	STRING_,
 	NONE_,
+};
+
+enum e_error {
+	REQUIRE_ARGUMENT,
+	INVALID_OPTIONS,
+	INVALID_COMMAND,
+	WRONG_LENGTH,
+	INVALID_KEY,
+	USAGE,
+	GENERAL,
+	EXIT,
 };
 
 enum 	e_hash_function {
@@ -93,7 +105,7 @@ typedef struct		s_data {
 	uint8_t			param_type;
 	uint8_t			*string;
 	uint8_t			*bytes;
-	uint8_t			key[16];
+	uint8_t			key[17];
 	uint64_t		len;
 	int				fd;
 	uint32_t		final_hash[8];
@@ -150,5 +162,9 @@ uint64_t reverse_permutation(uint64_t old_block);
 uint64_t substitutions(uint64_t d0);
 uint64_t	initial_permutation(char *bytes);
 uint64_t	expansion(uint32_t bytes);
+void raise_error(int cmd, int value, char *str, int flag);
+void	base64_decode(t_data *info);
+void	base64_encode(t_data *info);
+
 
 #endif
