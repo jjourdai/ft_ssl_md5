@@ -56,11 +56,9 @@ void 	check_if_corrupted_padding_after_decrypt(t_data *info)
 	uint32_t previous_value;
 	uint32_t quantity;
 
-	ft_putendl(info->bytes + info->len - 8);
-
 	ptr = info->bytes + info->len;
-	i = 1;
-	quantity = 1;
+	i = 0;
+	quantity = 0;
 	previous_value = 0;
 	while (++i < 9)
 	{
@@ -70,6 +68,7 @@ void 	check_if_corrupted_padding_after_decrypt(t_data *info)
 		{
 			if (previous_value != quantity)
 			{
+				// ft_printf("%d %d\n", previous_value, quantity);
 				ft_fprintf(STDERR_FILENO, "ft_ssl des: wrong final block length\n");
 				exit(-1);
 			}
@@ -90,6 +89,8 @@ void 	des_decrypt(t_data *info)
 
 	if (info->flag & F_BASE64)
 		base64_decode(info);
+
+	// write(1, info->bytes, info->len);
 	//rajouter une fonction ici pour generer la clef si info->key == NULL
 	check_if_corrupted(info);
 	encrypted_string = ft_memalloc(info->len + 1);

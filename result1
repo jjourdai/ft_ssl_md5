@@ -79,7 +79,6 @@ enum 	e_des {
 	F_PASSWORD = (1 << 12),
 	F_SALT = (1 << 13),
 	F_VECTOR = (1 << 14),
-	SIZE_KEY = 16,
 };
 
 # define BUFFER_SIZE 512
@@ -93,7 +92,7 @@ typedef struct		s_data {
 	uint8_t			param_type;
 	uint8_t			*string;
 	uint8_t			*bytes;
-	uint8_t			key[16];
+	uint8_t			*key;
 	uint64_t		len;
 	int				fd;
 	uint32_t		final_hash[8];

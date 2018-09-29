@@ -87,6 +87,7 @@ void 	des_encrypt(t_data *info)
 	if (info->bytes != NULL)
 		free(info->bytes);
 	info->bytes = encrypted_string;
+	info->len = 4298;
 	if (info->flag & F_BASE64)
 		base64_encode(info);
 }

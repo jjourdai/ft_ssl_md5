@@ -20,7 +20,8 @@ static char value_base64[] = {
 	'g','h','i','j','k','l','m','n',
 	'o','p','q','r','s','t','u','v',
 	'w','x','y','z','0','1','2','3',
-	'4','5','6','7','8','9','+','/'
+	'4','5','6','7','8','9','+','/',
+	0,
 };
 
 static char return_value(t_data *info, char c, size_t *equal)
@@ -42,36 +43,39 @@ static char return_value(t_data *info, char c, size_t *equal)
 
 void	base64_decode(t_data *info)
 {
-	char	*new_str;
 	size_t		new_len;
 	size_t		i;
 	size_t		j;
 	size_t		equal;
+	size_t		nb_discard_char;
 	uint32_t intermediate;
 	uint32_t test;
 
-	i = -1;
+	nb_discard_char = 0;
 	equal = 0;
-	if (info->bytes[info->len - 1] == '\n')
-		info->len--;
-	new_len = info->len / 4 * 3;
+	char *new_str = ft_memalloc(info->len + 4);
+	j = 0;
+	i = -1;
 	while (++i < info->len)
 	{
-		if ((i + 1) % 65 == 0 && info->bytes[i] == '\n')
+		if (info->bytes[i] == '\n' || info->bytes[i] == '\t' ||\
+			info->bytes[i] == ' ')
+		{
+			nb_discard_char++;
 			continue ;
-		info->bytes[i] = return_value(info, info->bytes[i], &equal);
+		}
+		else
+			new_str[j++] = info->bytes[i];
 	}
-	new_str = ft_memalloc(info->len + 1);
+	i = -1;
+	while (++i < info->len)
+		new_str[i] = return_value(info, new_str[i], &equal);
+	new_len = (info->len - nb_discard_char) / 4 * 3;
 	i = 0;
 	j = 0;
 	while (j < info->len)
 	{
-		if ((j + 1) % 65 == 0)
-		{
-			j++;
-			continue;
-		}
-		intermediate = SWAP_VALUE(*((uint32_t*)&info->bytes[j]));
+		intermediate = SWAP_VALUE(*((uint32_t*)&new_str[j]));
 		test = (0x3f000000 & intermediate) >> 6 | (0x3f0000 & intermediate) >> 4 | (0x3f00 & intermediate) >> 2 | (0x3f & intermediate);
 		new_str[i] = ((0xff0000 & test)) >> 16;
 		new_str[i + 1] = ((0xff00 & test) >> 8);
@@ -79,7 +83,6 @@ void	base64_decode(t_data *info)
 		i += 3;
 		j += 4;
 	}
-	// new_str[new_len] = '\n';
 	info->len = new_len - equal;
 	free(info->bytes);
 	info->bytes = (uint8_t*)new_str;

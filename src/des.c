@@ -36,7 +36,9 @@ static void		fill_target_struct(t_data *target, t_list *parameters, int opt_flag
 			target->string = current->str;
 		}
 		else if (current->type & F_KEY)
-			target->key = current->str;
+		{
+			ft_memcpy(target->key, current->str, SIZE_KEY);
+		}
 		// else if (current->type & F_PASSWORD)
 		// 	target->password = current->str;
 		tmp = tmp->next;

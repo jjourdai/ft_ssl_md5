@@ -98,13 +98,25 @@ void	get_keys(uint64_t keys[16], char *key, size_t len)
 {
 	uint64_t	base_key;
 	uint64_t	block;
+	size_t		len_key;
 
-	if (ft_strlen(key) > 16)
+	if (key == NULL)
+	{
+		ft_fprintf(STDERR_FILENO, "ft_ssl des: key == NULLL\n");
+			exit(-1);
+	}
+	if ((len_key = ft_strlen(key)) > 16)
 		key[16] = 0;
+	else if (len_key < 16)
+	{
+		ft_memset(key + len_key, '0', SIZE_KEY - len_key);
+		key[16] = 0;
+	}
 	if (!(base_key = ft_atoi_base_64(key, "0123456789ABCDEF")))
 	{
 		ft_fprintf(STDERR_FILENO, "ft_ssl des: non-hex digit\n"
 			"invalid hex key value");
+			exit(-1);
 	}
 	block = pass_cp1(base_key);
 	split_then_pass_cp2(keys, block);
