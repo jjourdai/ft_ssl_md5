@@ -24,7 +24,7 @@ static int		read_fd(t_data *info, int fd)
 	buffer = ft_memalloc(BUFFER_SIZE);
 	while ((len = read(fd, buffer, BUFFER_SIZE)))
 	{
-		inter_buffer = ft_memalloc(info->len + BUFFER_SIZE);
+		inter_buffer = ft_memalloc(info->len + BUFFER_SIZE + len);
 		if (main_buffer != NULL)
 			ft_memcpy(inter_buffer, main_buffer, info->len);
 		ft_memcpy(inter_buffer + info->len, buffer, BUFFER_SIZE);

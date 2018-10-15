@@ -18,7 +18,8 @@ void	display_des(t_data *info, t_command *cmd)
 	free(info->bytes);
 }
 
-static void		fill_target_struct(t_data *target, t_list *parameters, int opt_flag)
+static void		fill_target_struct(t_data *target, t_list *parameters,\
+	int opt_flag)
 {
 	t_list			*tmp;
 	t_parameters	*current;
@@ -46,7 +47,8 @@ static void		fill_target_struct(t_data *target, t_list *parameters, int opt_flag
 	ft_lstdel(&parameters, ft_del);
 }
 
-void 				run_des_parameters_and_exec(t_command *cmd, t_list *parameters, int opt_flag)
+void			run_des_parameters_and_exec(t_command *cmd, t_list *parameters,\
+	int opt_flag)
 {
 	t_data target;
 
@@ -61,7 +63,7 @@ void 				run_des_parameters_and_exec(t_command *cmd, t_list *parameters, int opt
 		close(target.fd);
 }
 
-void 	des(t_data *info)
+void			des(t_data *info)
 {
 	if (info->flag & F_DECRYPT)
 		des_decrypt(info);

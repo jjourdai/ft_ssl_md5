@@ -12,24 +12,18 @@
 
 #include "ssl.h"
 
-static uint64_t 	main_loop(uint64_t keys[16], uint32_t left, uint64_t right)
+static uint64_t		main_loop(uint64_t keys[16], uint32_t left, uint64_t right)
 {
-	uint64_t	subkey;
-	uint64_t	exp;
 	uint64_t	tmp_right;
 	uint64_t	tmp_left;
 	uint64_t	d0;
-	uint64_t	p;
 	size_t		i;
 
 	i = -1;
 	while (++i < 16)
 	{
-		exp = expansion(right);
-		subkey = keys[i];
-		d0 = exp ^ subkey;
-		p = substitutions(d0);
-		tmp_right = left ^ p;
+		d0 = expansion(right) ^ keys[i];
+		tmp_right = left ^ substitutions(d0);
 		tmp_left = right;
 		right = tmp_right;
 		left = tmp_left;
@@ -37,12 +31,11 @@ static uint64_t 	main_loop(uint64_t keys[16], uint32_t left, uint64_t right)
 	return ((0xffffffff & left) | ((0xffffffff & right) << 32));
 }
 
-
-static char *put_padding_character(t_data *info)
+static char			*put_padding_character(t_data *info)
 {
-	size_t len;
-	size_t new_len;
-	char   *padded_string;
+	size_t	len;
+	size_t	new_len;
+	char	*padded_string;
 
 	len = info->len;
 	if (len % 8)
@@ -59,35 +52,29 @@ static char *put_padding_character(t_data *info)
 	return (padded_string);
 }
 
-void 	des_encrypt(t_data *info)
+void				des_encrypt(t_data *info)
 {
-	uint64_t keys[16];
-	size_t i;
-	char *encrypted_string;
+	uint64_t	keys[16];
+	size_t		i;
+	char		*encrypted_string;
+	uint64_t	block;
 
-	//rajouter une fonction ici pour generer la clef si info->key == NULL
 	encrypted_string = put_padding_character(info);
 	i = 0;
 	ft_bzero(keys, sizeof(keys));
-	get_keys(keys, info->key, ft_strlen(info->key));
+	get_keys(keys, (char*)info->key, ft_strlen((char*)info->key));
 	while (i != info->len)
 	{
-		uint64_t block = initial_permutation(info->bytes + i);
-		uint32_t left;
-		uint32_t right;
-		left = (0xFFFFFFFF00000000 & block) >> 32;
-		right = (0xFFFFFFFF & block);
-		block = main_loop(keys, left, right);
+		block = initial_permutation((char*)info->bytes + i);
+		block = main_loop(keys, (0xFFFFFFFF00000000 & block) >> 32,\
+			(0xFFFFFFFF & block));
 		block = SWAP_VALUE(reverse_permutation(block));
-		char *result = (char*)(&block);
-		ft_memcpy(encrypted_string + i, result, 8);
+		ft_memcpy(encrypted_string + i, (char*)(&block), 8);
 		i += 8;
 	}
-	// if (info->bytes != NULL && (info->param_type == FILE_ ||\
-	// 	info->param_type == STDIN_))
 	if (info->bytes != NULL)
 		free(info->bytes);
-	info->bytes = encrypted_string;
+	info->bytes = (uint8_t*)encrypted_string;
 	if (info->flag & F_BASE64)
 		base64_encode(info);
 }

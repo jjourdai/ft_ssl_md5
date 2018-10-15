@@ -15,6 +15,7 @@ do
 	# ./ft_ssl des -d -k $K -i test2 | xxd > test3
 	# openssl des-ecb -d -K $K -in test1 | xxd > test4
 	# diff test3 test4
+	echo $i
 	cat /dev/urandom | head -c $RANDOM > random.txt
 
 	./ft_ssl des -e -k $K -i random.txt > test1
@@ -23,14 +24,20 @@ do
 	./ft_ssl des -d -k $K -i test2 | xxd > test3
 	openssl des-ecb -d -K $K -in test1 | xxd > test4
 	diff test3 test4
-
+	if [ "$(echo $?)" != "0" ]
+		then
+			exit
+	fi
 	./ft_ssl des-ecb -e -k $K -i random.txt > test1
 	openssl des-ecb -e -K $K -in random.txt > test2
 
 	./ft_ssl des-ecb -d -k $K -i test2 | xxd > test3
 	openssl des-ecb -d -K $K -in test1 | xxd > test4
 	diff test3 test4
-	echo $i
+	if [ "$(echo $?)" != "0" ]
+		then
+			exit
+	fi
 done
 
 rm test1 test2 random.txt test3 test4
