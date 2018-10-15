@@ -139,7 +139,7 @@ void				display_hash(t_data *target, t_command *cmd);
 void 				get_params_hash_function(t_command *, t_list*, int);
 void				run_parameters_and_exec(t_command *cmd, t_list *parameters, int opt_flag);
 void				exec_command(t_data *target, t_command *cmd, int opt_flag);
-void				exec_read_stdin(t_command *cmd, int opt_flag);
+void				exec_read_stdin(t_command *cmd, int opt_flag, t_data *target);
 
 void				base64(t_data *info);
 

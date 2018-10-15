@@ -43,7 +43,7 @@ void 				get_params_base64(t_command *cmd, t_list *parameters, int opt_flag)
 	target.fd = STDOUT_FILENO;
 	fill_target_struct(&target, parameters, opt_flag);
 	if (target.param_type == STDIN_)
-		exec_read_stdin(cmd, opt_flag);
+		exec_read_stdin(cmd, opt_flag, &target);
 	else
 		exec_command(&target, cmd, opt_flag);
 	if (target.fd != STDOUT_FILENO && target.fd != -1)

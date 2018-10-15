@@ -6,7 +6,7 @@
 /*   By: jjourdai <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/16 13:26:47 by jjourdai          #+#    #+#             */
-/*   Updated: 2018/09/22 14:49:15 by jjourdai         ###   ########.fr       */
+/*   Updated: 2018/10/15 16:10:58 by jjourdai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,6 @@ void		run_parameters_and_exec(t_command *cmd, t_list *parameters, int opt_flag)
 		tmp = tmp->next;
 	}
 	if (parameters == NULL)
-		exec_read_stdin(cmd, opt_flag);
+		exec_read_stdin(cmd, opt_flag, NULL);
 	ft_lstdel(&parameters, ft_del);
 }

@@ -6,7 +6,7 @@
 /*   By: jjourdai <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/22 14:43:53 by jjourdai          #+#    #+#             */
-/*   Updated: 2018/09/26 17:54:54 by jjourdai         ###   ########.fr       */
+/*   Updated: 2018/10/15 16:11:43 by jjourdai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void 				run_des_parameters_and_exec(t_command *cmd, t_list *parameters, int opt
 	target.fd = STDOUT_FILENO;
 	fill_target_struct(&target, parameters, opt_flag);
 	if (target.param_type == STDIN_)
-		exec_read_stdin(cmd, opt_flag);
+		exec_read_stdin(cmd, opt_flag, &target);
 	else
 		exec_command(&target, cmd, opt_flag);
 	if (target.fd != STDOUT_FILENO && target.fd != -1)

@@ -6,7 +6,7 @@
 /*   By: jjourdai <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/16 16:39:50 by jjourdai          #+#    #+#             */
-/*   Updated: 2018/09/22 14:47:05 by jjourdai         ###   ########.fr       */
+/*   Updated: 2018/10/15 16:11:19 by jjourdai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,14 +58,15 @@ static t_bool	get_file_bytes(t_data *target, t_command *cmd)
 	return (SUCCESS);
 }
 
-void			exec_read_stdin(t_command *cmd, int opt_flag)
+void			exec_read_stdin(t_command *cmd, int opt_flag, t_data *target)
 {
 	t_data stdin_input;
 
 	ft_bzero(&stdin_input, sizeof(stdin_input));
+	if (target != NULL)
+		ft_memcpy(&stdin_input, target, sizeof(t_data));
 	stdin_input.param_type = STDIN_;
 	stdin_input.flag = opt_flag;
-	stdin_input.fd = STDOUT_FILENO;
 	if (read_fd(&stdin_input, STDIN_FILENO) == DATA_RECEIVED)
 	{
 		cmd->exec_command(&stdin_input);
@@ -76,7 +77,7 @@ void			exec_read_stdin(t_command *cmd, int opt_flag)
 void			exec_command(t_data *target, t_command *cmd, int opt_flag)
 {
 	if (opt_flag & F_ECHO)
-		exec_read_stdin(cmd, opt_flag);
+		exec_read_stdin(cmd, opt_flag, NULL);
 	target->flag = opt_flag;
 	if (target->param_type == FILE_)
 	{
