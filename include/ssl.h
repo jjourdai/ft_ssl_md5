@@ -51,6 +51,7 @@ enum	e_param_type {
 	BASE64 = 2,
 	DES,
 	DES_ECB,
+	DES_CBC,
 	END,
 	FILE_,
 	STDIN_,
@@ -78,7 +79,7 @@ enum 	e_hash_function {
 
 enum 	e_base_64 {
 	F_INPUT = (1 << 4),
-	F_OUPUT = (1 << 5),
+	F_OUTPUT = (1 << 5),
 	F_DECODE = (1 << 6),
 	F_ENCODE = (1 << 7),
 };

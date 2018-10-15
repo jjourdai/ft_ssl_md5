@@ -6,25 +6,25 @@
 /*   By: jjourdai <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/17 10:23:13 by jjourdai          #+#    #+#             */
-/*   Updated: 2018/09/22 14:47:56 by jjourdai         ###   ########.fr       */
+/*   Updated: 2018/10/15 16:01:17 by jjourdai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ssl.h"
 
-static char value_base64[] = {
-	'A','B','C','D','E','F','G','H',
-	'I','J','K','L','M','N','O','P',
-	'Q','R','S','T','U','V','W','X',
-	'Y','Z','a','b','c','d','e','f',
-	'g','h','i','j','k','l','m','n',
-	'o','p','q','r','s','t','u','v',
-	'w','x','y','z','0','1','2','3',
-	'4','5','6','7','8','9','+','/',
+static char g_value_base64[] = {
+	'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+	'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+	'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+	'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
+	'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
+	'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+	'w', 'x', 'y', 'z', '0', '1', '2', '3',
+	'4', '5', '6', '7', '8', '9', '+', '/',
 	0,
 };
 
-static char return_value(t_data *info, char c, size_t *equal)
+static char	return_value(t_data *info, char c, size_t *equal)
 {
 	size_t i;
 
@@ -36,24 +36,25 @@ static char return_value(t_data *info, char c, size_t *equal)
 	}
 	while (++i < 65)
 	{
-		if (c == value_base64[i])
+		if (c == g_value_base64[i])
 			return (i);
 	}
 }
 
-void	base64_decode(t_data *info)
+void		base64_decode(t_data *info)
 {
 	size_t		new_len;
 	size_t		i;
 	size_t		j;
 	size_t		equal;
 	size_t		nb_discard_char;
-	uint32_t intermediate;
-	uint32_t test;
+	uint32_t	intermediate;
+	uint32_t	test;
+	char		*new_str;
 
 	nb_discard_char = 0;
 	equal = 0;
-	char *new_str = ft_memalloc(info->len + 4);
+	new_str = ft_memalloc(info->len + 4);
 	j = 0;
 	i = -1;
 	while (++i < info->len)
@@ -76,7 +77,10 @@ void	base64_decode(t_data *info)
 	while (j < info->len)
 	{
 		intermediate = SWAP_VALUE(*((uint32_t*)&new_str[j]));
-		test = (0x3f000000 & intermediate) >> 6 | (0x3f0000 & intermediate) >> 4 | (0x3f00 & intermediate) >> 2 | (0x3f & intermediate);
+		test = (0x3f000000 & intermediate) >> 6 |\
+		(0x3f0000 & intermediate) >> 4 |\
+		(0x3f00 & intermediate) >> 2 |
+		(0x3f & intermediate);
 		new_str[i] = ((0xff0000 & test)) >> 16;
 		new_str[i + 1] = ((0xff00 & test) >> 8);
 		new_str[i + 2] = ((0xff & test));
@@ -88,14 +92,14 @@ void	base64_decode(t_data *info)
 	info->bytes = (uint8_t*)new_str;
 }
 
-void	base64_encode(t_data *info)
+void		base64_encode(t_data *info)
 {
-	char	*new_str;
+	char		*new_str;
 	size_t		new_len;
 	size_t		i;
 	size_t		j;
-	uint32_t intermediate;
-	size_t padding;
+	uint32_t	intermediate;
+	size_t		padding;
 
 	padding = (info->len % 3 > 0) ? 3 - info->len % 3 : 0;
 	new_len = info->len / 3 * 4;
@@ -115,25 +119,24 @@ void	base64_encode(t_data *info)
 	}
 	i = -1;
 	while (++i < new_len - padding)
-		new_str[i] = value_base64[new_str[i]];
-	while (padding)
-	{
+		new_str[i] = g_value_base64[new_str[i]];
+	while (padding--)
 		new_str[i++] = '=';
-		padding--;
-	}
 	new_str[new_len] = '\n';
 	info->len = new_len + 1;
 	free(info->bytes);
 	info->bytes = (uint8_t*)new_str;
 }
 
-void	display_base64(t_data *info, t_command *cmd)
+void		display_base64(t_data *info, t_command *cmd)
 {
 	write(info->fd, info->bytes, info->len);
 }
 
-void 	base64(t_data *info)
+void		base64(t_data *info)
 {
+	if (info->len == 0)
+		return ;
 	if (info->flag & F_DECODE)
 		base64_decode(info);
 	else

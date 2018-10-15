@@ -17,6 +17,7 @@ static char command[][8] = {
   [SHA256] = "sha256",
   [DES] = "des",
   [DES_ECB] = "des-ecb",
+  [DES_CBC] = "des-cbc",
 };
 
 void raise_error(int cmd, int value, char *str, int flag)

@@ -42,7 +42,7 @@ static char *put_padding_character(t_data *info)
 {
 	size_t len;
 	size_t new_len;
-	char   *encrypted_string;
+	char   *padded_string;
 
 	len = info->len;
 	if (len % 8)
@@ -51,11 +51,12 @@ static char *put_padding_character(t_data *info)
 	}
 	else
 		new_len = info->len + 8;
-	encrypted_string = ft_memalloc(new_len + 1);
+	padded_string = ft_memalloc(new_len + 1);
+	if (info->len == 0)
+		info->bytes = ft_memalloc(8);
 	ft_memset(info->bytes + len, new_len - len, new_len - len);
-	// ft_printf("%d\n", )
 	info->len = new_len;
-	return (encrypted_string);
+	return (padded_string);
 }
 
 void 	des_encrypt(t_data *info)

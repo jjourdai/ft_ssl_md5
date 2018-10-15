@@ -6,7 +6,7 @@
 /*   By: jjourdai <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/23 18:46:24 by jjourdai          #+#    #+#             */
-/*   Updated: 2018/09/27 18:36:56 by jjourdai         ###   ########.fr       */
+/*   Updated: 2018/10/15 12:30:11 by jjourdai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,11 +72,11 @@ static int	error_str(char *base, char *str)
 	return (1);
 }
 
-uint64_t		ft_atoi_base_64(char *str, char *base)
+uint64_t	ft_atoi_base_64(char *str, char *base)
 {
-	int i;
-	uint64_t nbr;
-	uint64_t prev_nbr;
+	int			i;
+	uint64_t	nbr;
+	uint64_t	prev_nbr;
 
 	nbr = 0;
 	prev_nbr = 0;

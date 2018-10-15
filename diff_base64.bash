@@ -5,7 +5,7 @@ nb=1000
 
 for i in `seq 0 $nb`;
 do
-	cat /dev/urandom | head -c 4000 > random.txt && base64 random.txt > KoolRasta
+	cat /dev/urandom | head -c $RANDOM > random.txt && base64 random.txt > KoolRasta
 
 	echo $(cat KoolRasta) | ./ft_ssl base64 -d | xxd > test1
 	echo $(cat KoolRasta) | base64 -D | xxd > test2
@@ -29,7 +29,7 @@ rm test1 test2 random.txt
 nb=1000
 for i in `seq 0 $nb`;
 do
-	cat /dev/urandom | head -c 4000 > random.txt
+	cat /dev/urandom | head -c $RANDOM > random.txt
 	echo $(cat random.txt) | ./ft_ssl base64 > test1
 	echo $(cat random.txt) | base64 > test2
 	diff -u test1 test2

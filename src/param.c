@@ -29,12 +29,12 @@ t_parameters *store_parameters(char *str, int flag)
 	return (new_param);
 }
 
-static t_option base64_opt[][256] = {
+static t_option opts[][256] = {
 	[BASE64] = {
 		{"decode", 'd', F_DECODE, NULL},
 		{"encode", 'e', F_ENCODE, NULL},
 		{"input", 'i', F_INPUT, store_parameters},
-		{"ouput", 'o', F_OUPUT, store_parameters},
+		{"output", 'o', F_OUTPUT, store_parameters},
 		{NULL, 0, 0, NULL},
 	},
 	[MD5] = {
@@ -57,7 +57,31 @@ static t_option base64_opt[][256] = {
 		{"encrypt", 'e', F_ENCRYPT, NULL},
 		{"input", 'i', F_INPUT, store_parameters},
 		{"key", 'k', F_KEY, store_parameters},
-		{"output", 'o', F_OUPUT, store_parameters},
+		{"output", 'o', F_OUTPUT, store_parameters},
+		{"password", 'p', F_PASSWORD, store_parameters},
+		{"salt", 's', F_SALT, store_parameters},
+		{"initvector", 'v', F_VECTOR, store_parameters},
+		{NULL, 0, 0, NULL},
+	},
+	[DES_ECB] = {
+		{"base64", 'a', F_BASE64, NULL},
+		{"decrypt", 'd', F_DECRYPT, NULL},
+		{"encrypt", 'e', F_ENCRYPT, NULL},
+		{"input", 'i', F_INPUT, store_parameters},
+		{"key", 'k', F_KEY, store_parameters},
+		{"output", 'o', F_OUTPUT, store_parameters},
+		{"password", 'p', F_PASSWORD, store_parameters},
+		{"salt", 's', F_SALT, store_parameters},
+		{"initvector", 'v', F_VECTOR, store_parameters},
+		{NULL, 0, 0, NULL},
+	},
+	[DES_CBC] = {
+		{"base64", 'a', F_BASE64, NULL},
+		{"decrypt", 'd', F_DECRYPT, NULL},
+		{"encrypt", 'e', F_ENCRYPT, NULL},
+		{"input", 'i', F_INPUT, store_parameters},
+		{"key", 'k', F_KEY, store_parameters},
+		{"output", 'o', F_OUTPUT, store_parameters},
 		{"password", 'p', F_PASSWORD, store_parameters},
 		{"salt", 's', F_SALT, store_parameters},
 		{"initvector", 'v', F_VECTOR, store_parameters},
@@ -77,18 +101,18 @@ t_parameters *shortname_opt(char **argv, int *i, int command, int *flag)
 	{
 		opt_index = -1;
 		flag_has_found = 0;
-		while (base64_opt[command][++opt_index].shortname)
+		while (opts[command][++opt_index].shortname)
 		{
-			if (base64_opt[command][opt_index].shortname == c)
+			if (opts[command][opt_index].shortname == c)
 			{
 				flag_has_found = 1;
-				*flag |= base64_opt[command][opt_index].flag;
-				if (base64_opt[command][opt_index].f != NULL)
+				*flag |= opts[command][opt_index].flag;
+				if (opts[command][opt_index].f != NULL)
 				{
 					if (argv[*i][j + 1] != '\0')
-						return (base64_opt[command][opt_index].f(&argv[*i][j + 1], base64_opt[command][opt_index].flag));
+						return (opts[command][opt_index].f(&argv[*i][j + 1], opts[command][opt_index].flag));
 					else if (argv[*i + 1] != NULL)
-						return (base64_opt[command][opt_index].f(argv[++(*i)], base64_opt[command][opt_index].flag));
+						return (opts[command][opt_index].f(argv[++(*i)], opts[command][opt_index].flag));
 					else
 						raise_error(command, REQUIRE_ARGUMENT, &c, EXIT);
 					return (NULL);

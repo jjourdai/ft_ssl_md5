@@ -21,6 +21,8 @@ static t_command *get_function(char *str)
 		[SHA256] = {{SHA256, "sha256", sha256, run_parameters_and_exec, display_hash}},
 		[BASE64] = {{BASE64, "base64", base64, get_params_base64, display_base64}},
 		[DES] = {{DES, "des", des, run_des_parameters_and_exec, display_des}},
+		[DES_ECB] = {{DES_ECB, "des-ecb", des, run_des_parameters_and_exec, display_des}},
+		[DES_CBC] = {{DES_CBC, "des-cbc", des, run_des_parameters_and_exec, display_des}},
 		[END] = {{0, NULL, NULL, NULL, NULL}},
 	};
 

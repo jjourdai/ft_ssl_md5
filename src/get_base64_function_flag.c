@@ -23,7 +23,7 @@ static void		fill_target_struct(t_data *target, t_list *parameters, int opt_flag
 	while (tmp)
 	{
 		current = (t_parameters*)tmp->content;
-		if (current->type == F_OUPUT)
+		if (current->type == F_OUTPUT)
 			target->fd = open(current->str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		else if (current->type == F_INPUT || current->type == NONE_)
 		{
