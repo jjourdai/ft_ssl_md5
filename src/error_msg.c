@@ -21,6 +21,7 @@ static char g_error[][256] = {
 	"\nCipher commands:\nbase64\ndes\ndes-ebc\ndes-cbc",
 	[WRONG_LENGTH] = "ft_ssl %s: wrong final block length\n",
 	[INVALID_KEY] = "ft_ssl des: non-hex digit\ninvalid hex key value",
+	[READ_ERROR] = "ft_ssl: Read error in %s\n",
 };
 
 static char g_command[][8] = {

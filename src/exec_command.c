@@ -18,12 +18,14 @@ static int		read_fd(t_data *info, int fd)
 	char	*buffer;
 	void	*main_buffer;
 	void	*inter_buffer;
-	size_t	len;
+	int		len;
 
 	main_buffer = NULL;
 	buffer = ft_memalloc(BUFFER_SIZE);
 	while ((len = read(fd, buffer, BUFFER_SIZE)))
 	{
+		if (len == -1)
+			raise_error(GENERAL, READ_ERROR, (info->string == NULL) ? "(stdin)" : (char*)info->string, EXIT);
 		inter_buffer = ft_memalloc(info->len + BUFFER_SIZE + len);
 		if (main_buffer != NULL)
 			ft_memcpy(inter_buffer, main_buffer, info->len);
@@ -45,7 +47,6 @@ static int		read_fd(t_data *info, int fd)
 static t_bool	get_file_bytes(t_data *target, t_command *cmd)
 {
 	int fd;
-
 	fd = open((char*)target->string, O_RDONLY);
 	if (fd == -1)
 	{

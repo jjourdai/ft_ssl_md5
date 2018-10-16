@@ -67,6 +67,7 @@ enum e_error {
 	INVALID_KEY,
 	USAGE,
 	GENERAL,
+	READ_ERROR,
 	EXIT,
 };
 
@@ -107,6 +108,7 @@ typedef struct		s_data {
 	uint8_t			*string;
 	uint8_t			*bytes;
 	uint8_t			key[17];
+	uint8_t			iv[17];
 	uint64_t		len;
 	int				fd;
 	uint32_t		final_hash[8];
