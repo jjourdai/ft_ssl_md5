@@ -67,15 +67,30 @@ void			run_des_parameters_and_exec(t_command *cmd, t_list *parameters,\
 		close(target.fd);
 }
 
-void			des(t_data *info)
+void			des_cbc(t_data *info)
+{
+	uint64_t	iv;
+	size_t		len_key;
+
+	if ((len_key = ft_strlen((char*)info->iv)) > 16)
+		info->iv[16] = 0;
+	else if (len_key < 16)
+	{
+		ft_memset(info->iv + len_key, '0', SIZE_KEY - len_key);
+		info->iv[16] = 0;
+	}
+	if (!(iv = ft_atoi_base_64((char*)info->iv, "0123456789ABCDEF")))
+		raise_error(DES, INVALID_KEY, NULL ,EXIT);
+	if (info->flag & F_DECRYPT)
+		des_cbc_decrypt(info, iv);
+	else
+		des_cbc_encrypt(info, iv);
+}
+
+void			des_ecb(t_data *info)
 {
 	if (info->flag & F_DECRYPT)
-		des_cbc_decrypt(info);
+		des_ecb_decrypt(info);
 	else
-		des_cbc_encrypt(info);
-
-	// if (info->flag & F_DECRYPT)
-	// 	des_ecb_decrypt(info);
-	// else
-	// 	des_ecb_encrypt(info);
+		des_ecb_encrypt(info);
 }

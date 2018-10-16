@@ -81,10 +81,8 @@ void				des_ecb_encrypt(t_data *info)
 		base64_encode(info);
 }
 
-void				des_cbc_encrypt(t_data *info)
+void				des_cbc_encrypt(t_data *info,  uint64_t iv)
 {
-	uint64_t iv = 0x1234000000000000;
-
 	uint64_t	keys[16];
 	size_t		i;
 	char		*encrypted_string;

@@ -100,7 +100,7 @@ void				des_ecb_decrypt(t_data *info)
 	check_if_corrupted_padding_after_decrypt(info);
 }
 
-void				des_cbc_decrypt(t_data *info)
+void				des_cbc_decrypt(t_data *info, uint64_t iv)
 {
 	uint64_t	keys[16];
 	size_t		i;
@@ -115,7 +115,6 @@ void				des_cbc_decrypt(t_data *info)
 	i = 0;
 	ft_bzero(keys, sizeof(keys));
 	get_keys(keys, (char*)info->key, ft_strlen((char*)info->key));
-	uint64_t base_iv = 0x1234000000000000;
 	uint64_t test;
 	while (i != info->len)
 	{
@@ -124,8 +123,8 @@ void				des_cbc_decrypt(t_data *info)
 		block = main_loop_reverse(keys, (0xFFFFFFFF00000000 & block)\
 			>> 32, (0xFFFFFFFF & block));
 		test = reverse_permutation(block);
-		test = test ^ base_iv;
-		base_iv = old_block;
+		test = test ^ iv;
+		iv = old_block;
 		block = SWAP_VALUE(test);
 		ft_memcpy(encrypted_string + i, (char*)(&block), 8);
 		i += 8;

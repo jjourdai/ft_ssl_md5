@@ -151,7 +151,8 @@ void				base64_handle_parameters_and_exec(t_command *cmd, int nb_opt,\
 	int opt_flag, char **argv);
 t_list				*get_params(char **argv, int argc, int index, int *flag);
 
-void				des(t_data *info);
+void				des_ecb(t_data *info);
+void				des_cbc(t_data *info);
 
 void				display_des(t_data *info, t_command *cmd);
 void				run_des_parameters_and_exec(t_command *, t_list *, int opt_flag);
@@ -159,8 +160,8 @@ void				run_des_parameters_and_exec(t_command *, t_list *, int opt_flag);
 void	get_keys(uint64_t keys[16], char *key, size_t len);
 void 	des_ecb_encrypt(t_data *info);
 void 	des_ecb_decrypt(t_data *info);
-void 	des_cbc_encrypt(t_data *info);
-void 	des_cbc_decrypt(t_data *info);
+void 	des_cbc_encrypt(t_data *info, uint64_t iv);
+void 	des_cbc_decrypt(t_data *info, uint64_t iv);
 
 // char *put_padding_character(t_data *info);
 uint64_t reverse_permutation(uint64_t old_block);
