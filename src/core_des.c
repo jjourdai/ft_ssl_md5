@@ -23,16 +23,14 @@ static const int g_ip[] = {
 	63, 55, 47, 39, 31, 23, 15, 7
 };
 
-uint64_t		initial_permutation(char *bytes)
+uint64_t		initial_permutation(uint64_t block)
 {
 	uint64_t	old_block;
 	uint64_t	new_block;
-	uint64_t	block;
 	int			i;
 
 	new_block = 0;
-	
-	old_block = SWAP_VALUE(*((uint64_t*)bytes));
+	old_block = block;
 	block = 0;
 	i = -1;
 	while (++i < 64)

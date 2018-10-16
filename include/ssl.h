@@ -92,7 +92,7 @@ enum 	e_des {
 	F_KEY = (1 << 11),
 	F_PASSWORD = (1 << 12),
 	F_SALT = (1 << 13),
-	F_VECTOR = (1 << 14),
+	F_IVECTOR = (1 << 14),
 	SIZE_KEY = 16,
 };
 
@@ -145,25 +145,27 @@ void				exec_read_stdin(t_command *cmd, int opt_flag, t_data *target);
 
 void				base64(t_data *info);
 
-void	display_base64(t_data *info, t_command *cmd);
+void				display_base64(t_data *info, t_command *cmd);
 void 				get_params_base64(t_command *, t_list*, int);
-void		base64_handle_parameters_and_exec(t_command *cmd, int nb_opt,\
-int opt_flag, char **argv);
-t_list	*get_params(char **argv, int argc, int index, int *flag);
+void				base64_handle_parameters_and_exec(t_command *cmd, int nb_opt,\
+	int opt_flag, char **argv);
+t_list				*get_params(char **argv, int argc, int index, int *flag);
 
 void				des(t_data *info);
 
-void	display_des(t_data *info, t_command *cmd);
-void	run_des_parameters_and_exec(t_command *, t_list *, int opt_flag);
+void				display_des(t_data *info, t_command *cmd);
+void				run_des_parameters_and_exec(t_command *, t_list *, int opt_flag);
 
-void get_keys(uint64_t keys[16], char *key, size_t len);
-void 	des_encrypt(t_data *info);
-void 	des_decrypt(t_data *info);
+void	get_keys(uint64_t keys[16], char *key, size_t len);
+void 	des_ecb_encrypt(t_data *info);
+void 	des_ecb_decrypt(t_data *info);
+void 	des_cbc_encrypt(t_data *info);
+void 	des_cbc_decrypt(t_data *info);
 
 // char *put_padding_character(t_data *info);
 uint64_t reverse_permutation(uint64_t old_block);
 uint64_t substitutions(uint64_t d0);
-uint64_t	initial_permutation(char *bytes);
+uint64_t	initial_permutation(uint64_t block);
 uint64_t	expansion(uint32_t bytes);
 void raise_error(int cmd, int value, char *str, int flag);
 void	base64_decode(t_data *info);

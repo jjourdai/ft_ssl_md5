@@ -40,6 +40,10 @@ static void		fill_target_struct(t_data *target, t_list *parameters,\
 		{
 			ft_memcpy(target->key, current->str, SIZE_KEY);
 		}
+		else if (current->type & F_IVECTOR)
+		{
+			ft_memcpy(target->iv, current->str, SIZE_KEY);
+		}
 		// else if (current->type & F_PASSWORD)
 		// 	target->password = current->str;
 		tmp = tmp->next;
@@ -66,7 +70,12 @@ void			run_des_parameters_and_exec(t_command *cmd, t_list *parameters,\
 void			des(t_data *info)
 {
 	if (info->flag & F_DECRYPT)
-		des_decrypt(info);
+		des_cbc_decrypt(info);
 	else
-		des_encrypt(info);
+		des_cbc_encrypt(info);
+
+	// if (info->flag & F_DECRYPT)
+	// 	des_ecb_decrypt(info);
+	// else
+	// 	des_ecb_encrypt(info);
 }

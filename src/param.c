@@ -60,7 +60,7 @@ static t_option opts[][256] = {
 		{"output", 'o', F_OUTPUT, store_parameters},
 		{"password", 'p', F_PASSWORD, store_parameters},
 		{"salt", 's', F_SALT, store_parameters},
-		{"initvector", 'v', F_VECTOR, store_parameters},
+		{"initvector", 'v', F_IVECTOR, store_parameters},
 		{NULL, 0, 0, NULL},
 	},
 	[DES_ECB] = {
@@ -72,7 +72,7 @@ static t_option opts[][256] = {
 		{"output", 'o', F_OUTPUT, store_parameters},
 		{"password", 'p', F_PASSWORD, store_parameters},
 		{"salt", 's', F_SALT, store_parameters},
-		{"initvector", 'v', F_VECTOR, store_parameters},
+		{"initvector", 'v', F_IVECTOR, store_parameters},
 		{NULL, 0, 0, NULL},
 	},
 	[DES_CBC] = {
@@ -84,7 +84,7 @@ static t_option opts[][256] = {
 		{"output", 'o', F_OUTPUT, store_parameters},
 		{"password", 'p', F_PASSWORD, store_parameters},
 		{"salt", 's', F_SALT, store_parameters},
-		{"initvector", 'v', F_VECTOR, store_parameters},
+		{"initvector", 'v', F_IVECTOR, store_parameters},
 		{NULL, 0, 0, NULL},
 	},
 };
