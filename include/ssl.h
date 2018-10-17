@@ -47,7 +47,7 @@ enum	e_macro {
 
 enum	e_param_type {
 	MD5 = 0,
-	SHA256 = 1,
+	SHA256TEST = 1,
 	BASE64 = 2,
 	DES,
 	DES_ECB,
@@ -108,7 +108,9 @@ typedef struct		s_data {
 	uint8_t			*string;
 	uint8_t			*bytes;
 	uint8_t			key[17];
+	uint8_t			salt[17];
 	uint8_t			iv[17];
+	uint8_t			*password;
 	uint64_t		len;
 	int				fd;
 	uint32_t		final_hash[8];

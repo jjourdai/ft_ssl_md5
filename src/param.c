@@ -44,7 +44,7 @@ static t_option opts[][256] = {
 		{"string", 's', F_STRING, store_parameters},
 		{NULL, 0, 0, NULL},
 	},
-	[SHA256] = {
+	[SHA256TEST] = {
 		{"print", 'p', F_ECHO, NULL},
 		{"quiet", 'q', F_QUIET, NULL},
 		{"reverse", 'r', F_REVERSE, NULL},

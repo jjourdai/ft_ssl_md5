@@ -31,9 +31,9 @@ SRC_NAME = main.c \
 
 OBJ_PATH = ./.obj/
 
-CPPFLAGS = -Iinclude -I ./libft/include
+CPPFLAGS = -Iinclude -I ./libft/include -I /Users/jjourdai/.brew/opt/openssl/include
 
-LDFLAGS = -Llibft
+LDFLAGS = -Llibft -lcrypto -L ~/.brew/opt/openssl/lib
 
 LDLIBS = -lft
 
