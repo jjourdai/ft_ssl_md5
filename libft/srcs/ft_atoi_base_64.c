@@ -6,7 +6,7 @@
 /*   By: jjourdai <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/23 18:46:24 by jjourdai          #+#    #+#             */
-/*   Updated: 2018/10/15 12:30:11 by jjourdai         ###   ########.fr       */
+/*   Updated: 2018/10/17 11:17:26 by jjourdai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,11 @@ static int	error_base(char *base, int size)
 	char	tmp[size];
 
 	i = 0;
-	if (base == 0)
+	ft_bzero(&tmp, sizeof(tmp));
+	if (base == NULL)
 		return (0);
 	while (base[i])
 	{
-		if (base[i] == '+' || base[i] == '-')
-			return (0);
 		tmp[i] = base[i];
 		i++;
 		j = 0;
