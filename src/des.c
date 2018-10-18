@@ -105,60 +105,20 @@ void			des_cbc(t_data *info)
 
 void			des_ecb(t_data *info)
 {
-	#include <openssl/evp.h>
-#include <openssl/sha.h>
-#include <openssl/crypto.h>>
-
-	ft_putendl(info->password);
-	ft_putendl(info->salt);
-// salt=99682010C28DC209
-// key=27959D4D9D69EF08
-	
-	 const EVP_CIPHER *cipher;
-    const EVP_MD *dgst = NULL;
-    unsigned char key[EVP_MAX_KEY_LENGTH], iv[EVP_MAX_IV_LENGTH];
-    const char *password = info->password;
-	uint64_t lol = SWAP_VALUE(ft_atoi_base_64(info->salt, "0123456789ABCDEF"));
-    const unsigned char *salt = (unsigned char*)&lol;
-    int i;
-
-    OpenSSL_add_all_algorithms();
-
-    cipher = EVP_get_cipherbyname("des-ecb");
-    // if(!cipher) { fprintf(stderr, "no such cipher\n"); return 1; }
-
-    dgst=EVP_get_digestbyname("md5");
-    // if(!dgst) { fprintf(stderr, "no such digest\n"); return 1; }
-
-    if(!EVP_BytesToKey(cipher, dgst, salt,
-        (unsigned char *) password,
-        strlen(password), 1, key, iv))
-    {
-        fprintf(stderr, "EVP_BytesToKey failed\n");
-        // return 1;
-    }
-    printf("Key: "); for(i=0; i<cipher->key_len; ++i) { printf("%02x", key[i]); } printf("\n");
-	// unsigned char *ptr = malloc(16);
-	// i = 1;
-	// PKCS5_PBKDF2_HMAC(password, strlen(password), NULL, 0, i, EVP_md5(), 16, ptr);
-    // printf("Key: "); for(i=0; i<cipher->key_len; ++i) { printf("%02x", ptr[i]); } printf("\n");
-	// ft_fprintf(2, "Swap with i = %d %llX\n", i, SWAP_VALUE(*((uint64_t*)ptr)));
-	// ft_putendl(NULL);
+	// if (info->password[0] == 0)
+	// {
+	// 	//getch passowrd in stdin
 	// }
-	if (info->password[0] == 0)
-	{
-		//getch passowrd in stdin
-	}
-	if (info->salt[0] == 0)
-	{
-		//generate salt
-	}
-	if (info->key[0] == 0)
-	{
-		//generate key
-		// pbkdf2(NULL, 0, 0, 0);
+	// if (info->salt[0] == 0)
+	// {
+	// 	//generate salt
+	// }
+	// if (info->key[0] == 0)
+	// {
+	// 	//generate key
+	// 	// pbkdf2(NULL, 0, 0, 0);
 
-	}
+	// }
 	if (info->flag & F_DECRYPT)
 		des_ecb_decrypt(info);
 	else
