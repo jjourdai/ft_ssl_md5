@@ -42,8 +42,8 @@ NAME = ft_ssl
 
 CC = gcc
 
-CFLAGS = -Wall -Wextra -g -fsanitize=address
-#CFLAGS = -Wall -Wextra -g
+#CFLAGS = -Wall -Wextra -g -fsanitize=address
+CFLAGS = -Wall -Wextra
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
 

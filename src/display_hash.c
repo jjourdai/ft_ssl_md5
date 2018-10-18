@@ -19,7 +19,7 @@ static char		g_data[][10] = {
 	[FILE_] = "%s",
 };
 
-static char		*int_to_char(t_data *target, size_t length, int command)
+char		*int_to_char(t_data *target, size_t length, int command)
 {
 	size_t	i;
 	char	*hash_str;

@@ -105,6 +105,7 @@ uint64_t	*get_keys(char *key, size_t len)
 
 	if (keys[0] == 0)
 	{
+		ft_toupper_str(key, len);
 		if (key == NULL)
 		{
 			ft_fprintf(STDERR_FILENO, "ft_ssl des: key == NULLL\n");

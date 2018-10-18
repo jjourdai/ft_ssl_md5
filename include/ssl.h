@@ -110,10 +110,10 @@ typedef struct		s_data {
 	uint8_t			param_type;
 	uint8_t			*string;
 	uint8_t			*bytes;
-	uint8_t			key[17];
-	uint8_t			iv[17];
-	uint8_t			salt[17];
-	uint8_t			password[PASSWORD_LEN];
+	uint8_t			key[SIZE_KEY + 1];
+	uint8_t			iv[SIZE_KEY + 1];
+	uint8_t			salt[SIZE_KEY + 1];
+	uint8_t			password[PASSWORD_LEN + 1];
 	uint64_t		len;
 	int				fd;
 	uint32_t		final_hash[8];
@@ -179,5 +179,8 @@ void	base64_encode(t_data *info);
 uint64_t	iv_or_salt_generator(void);
 uint64_t	iv_or_salt_str_to_bytes(char str[17]);
 char	*wrap_getpass(void);
+t_command	*get_function(char *str);
+char		*int_to_char(t_data *target, size_t length, int command);
+
 
 #endif

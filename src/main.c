@@ -26,7 +26,7 @@ static t_command	g_cmd[][6] = {
 	[END] = {{0, NULL, NULL, NULL, NULL}},
 };
 
-static t_command	*get_function(char *str)
+t_command	*get_function(char *str)
 {
 	size_t				i;
 

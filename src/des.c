@@ -65,6 +65,24 @@ void			run_des_parameters_and_exec(t_command *cmd, t_list *parameters,\
 		close(target.fd);
 }
 
+char			*generate_key(uint64_t salt, char *password)
+{
+	t_data get_md5_key;
+
+	ft_bzero(&get_md5_key, sizeof(get_md5_key));
+	salt = SWAP_VALUE(salt);
+	char *str = ((char*)&salt);
+	char *concat = ft_memalloc(128);
+	ft_memcpy(concat, password, ft_strlen(password));
+	ft_memcpy(concat + ft_strlen(password), str, 8);
+	get_md5_key.bytes = (uint8_t*)concat;
+	get_md5_key.len = ft_strlen(concat);
+	md5(&get_md5_key);
+	char *hash_str = int_to_char(&get_md5_key, 4, MD5);
+	hash_str[16] = 0;
+	return (hash_str);
+}
+
 void			des_cbc(t_data *info)
 {
 	uint64_t	salt;
@@ -79,6 +97,7 @@ void			des_cbc(t_data *info)
 			iv_or_salt_str_to_bytes((char*)(info->salt));
 		password = (info->password[0] == 0) ? ft_memcpy(info->password,\
 			wrap_getpass(), PASSWORD_LEN) : info->password;
+		ft_memcpy(info->key, generate_key(salt, password), SIZE_KEY);
 	}
 	if (info->flag & F_DECRYPT)
 		des_cbc_decrypt(info, iv);
@@ -88,6 +107,17 @@ void			des_cbc(t_data *info)
 
 void			des_ecb(t_data *info)
 {
+	uint64_t	salt;
+	char		*password;
+
+	if (info->key[0] == 0)
+	{
+		salt = (info->salt[0] == 0) ? iv_or_salt_generator() :\
+			iv_or_salt_str_to_bytes((char*)(info->salt));
+		password = (info->password[0] == 0) ? ft_memcpy(info->password,\
+			wrap_getpass(), PASSWORD_LEN) : info->password;
+		ft_memcpy(info->key, generate_key(salt, password), SIZE_KEY);
+	}
 	if (info->flag & F_DECRYPT)
 		des_ecb_decrypt(info);
 	else
