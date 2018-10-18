@@ -27,6 +27,7 @@ SRC_NAME = main.c \
 			des_decode.c \
 			core_des.c \
 			error_msg.c \
+			key_generation.c \
 
 
 OBJ_PATH = ./.obj/

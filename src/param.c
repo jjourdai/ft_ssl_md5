@@ -13,23 +13,22 @@
 #include <ssl.h>
 #include <colors.h>
 
-void	longname_opt(char *str)
+void			longname_opt(char *str)
 {
 	ft_putendl(str);
 }
 
-t_parameters *store_parameters(char *str, int flag)
+t_parameters	*store_parameters(char *str, int flag)
 {
 	t_parameters *new_param;
 
 	new_param = ft_memalloc(sizeof(t_parameters));
 	new_param->str = str;
 	new_param->type = flag;
-//	ft_putendl(str);
 	return (new_param);
 }
 
-static t_option opts[][256] = {
+static t_option g_opts[][256] = {
 	[BASE64] = {
 		{"decode", 'd', F_DECODE, NULL},
 		{"encode", 'e', F_ENCODE, NULL},
@@ -89,7 +88,7 @@ static t_option opts[][256] = {
 	},
 };
 
-t_parameters *shortname_opt(char **argv, int *i, int command, int *flag)
+t_parameters	*shortname_opt(char **argv, int *i, int command, int *flag)
 {
 	int		j;
 	int		opt_index;
@@ -101,18 +100,20 @@ t_parameters *shortname_opt(char **argv, int *i, int command, int *flag)
 	{
 		opt_index = -1;
 		flag_has_found = 0;
-		while (opts[command][++opt_index].shortname)
+		while (g_opts[command][++opt_index].shortname)
 		{
-			if (opts[command][opt_index].shortname == c)
+			if (g_opts[command][opt_index].shortname == c)
 			{
 				flag_has_found = 1;
-				*flag |= opts[command][opt_index].flag;
-				if (opts[command][opt_index].f != NULL)
+				*flag |= g_opts[command][opt_index].flag;
+				if (g_opts[command][opt_index].f != NULL)
 				{
 					if (argv[*i][j + 1] != '\0')
-						return (opts[command][opt_index].f(&argv[*i][j + 1], opts[command][opt_index].flag));
+						return (g_opts[command][opt_index].f(&argv[*i][j + 1],\
+							g_opts[command][opt_index].flag));
 					else if (argv[*i + 1] != NULL)
-						return (opts[command][opt_index].f(argv[++(*i)], opts[command][opt_index].flag));
+						return (g_opts[command][opt_index].f(argv[++(*i)],\
+							g_opts[command][opt_index].flag));
 					else
 						raise_error(command, REQUIRE_ARGUMENT, &c, EXIT);
 					return (NULL);
@@ -125,11 +126,11 @@ t_parameters *shortname_opt(char **argv, int *i, int command, int *flag)
 	return (NULL);
 }
 
-t_list		*get_params(char **argv, int argc, int command, int *flag)
+t_list			*get_params(char **argv, int argc, int command, int *flag)
 {
-	int i;
-	t_parameters *new_params;
-	t_list *parameters;
+	int				i;
+	t_parameters	*new_params;
+	t_list			*parameters;
 
 	i = 1;
 	parameters = NULL;
@@ -142,11 +143,12 @@ t_list		*get_params(char **argv, int argc, int command, int *flag)
 		else if (argv[i][0] == '-')
 		{
 			if ((new_params = shortname_opt(argv, &i, command, flag)) != NULL)
-				ft_lstadd_back(&parameters, ft_lstnew(new_params, sizeof(t_parameters)));
+				ft_lstadd_back(&parameters, ft_lstnew(new_params,\
+					sizeof(t_parameters)));
 		}
 		else
-			ft_lstadd_back(&parameters, ft_lstnew(store_parameters(argv[i], NONE_), sizeof(t_parameters)));
+			ft_lstadd_back(&parameters,\
+			ft_lstnew(store_parameters(argv[i], NONE_), sizeof(t_parameters)));
 	}
-	//ft_printf("%b\n", *flag);
 	return (parameters);
 }

@@ -65,9 +65,11 @@ enum e_error {
 	INVALID_COMMAND,
 	WRONG_LENGTH,
 	INVALID_KEY,
+	OPEN_FAILED,
 	USAGE,
 	GENERAL,
 	READ_ERROR,
+	WRONG_PASSWD,
 	EXIT,
 };
 
@@ -94,6 +96,7 @@ enum 	e_des {
 	F_SALT = (1 << 13),
 	F_IVECTOR = (1 << 14),
 	SIZE_KEY = 16,
+	PASSWORD_LEN = 128,
 };
 
 # define BUFFER_SIZE 512
@@ -108,9 +111,9 @@ typedef struct		s_data {
 	uint8_t			*string;
 	uint8_t			*bytes;
 	uint8_t			key[17];
-	uint8_t			salt[17];
 	uint8_t			iv[17];
-	uint8_t			*password;
+	uint8_t			salt[17];
+	uint8_t			password[PASSWORD_LEN];
 	uint64_t		len;
 	int				fd;
 	uint32_t		final_hash[8];
@@ -159,7 +162,7 @@ void				des_cbc(t_data *info);
 void				display_des(t_data *info, t_command *cmd);
 void				run_des_parameters_and_exec(t_command *, t_list *, int opt_flag);
 
-void	get_keys(uint64_t keys[16], char *key, size_t len);
+uint64_t	*get_keys(char *key, size_t len);
 void 	des_ecb_encrypt(t_data *info);
 void 	des_ecb_decrypt(t_data *info);
 void 	des_cbc_encrypt(t_data *info, uint64_t iv);
@@ -173,6 +176,8 @@ uint64_t	expansion(uint32_t bytes);
 void raise_error(int cmd, int value, char *str, int flag);
 void	base64_decode(t_data *info);
 void	base64_encode(t_data *info);
-
+uint64_t	iv_or_salt_generator(void);
+uint64_t	iv_or_salt_str_to_bytes(char str[17]);
+char	*wrap_getpass(void);
 
 #endif

@@ -31,40 +31,46 @@ static int g_cp2[] = {
 	34, 53, 46, 42, 50, 36, 29, 32,
 };
 
-static uint64_t ls[] = {
+static uint64_t g_ls[] = {
 	1, 1, 2, 2, 2, 2, 2, 2,
 	1, 2, 2, 2, 2, 2, 2, 1,
 };
 
-uint64_t 	pass_cp1(uint64_t old_block)
+uint64_t	pass_cp1(uint64_t old_block)
 {
 	uint64_t	block;
+	int			i;
 
 	block = 0;
-	for (int i = 0; i < 56; i++)
+	i = -1;
+	while (++i < 56)
 	{
 		if (g_cp1[i] - i - 1 > 0)
-			block |= ((1ll << (64 - g_cp1[i])) & old_block) << (g_cp1[i] - i - 1);
+			block |= ((1ll << (64 - g_cp1[i])) & old_block)\
+				<< (g_cp1[i] - i - 1);
 		else
-			block |= ((1ll << (64 - g_cp1[i])) & old_block) >> (i + 1 - g_cp1[i]);
-		// ft_printf("%d", ((1ll << (64 - g_cp1[i])) & old_block) ? 1 : 0);
+			block |= ((1ll << (64 - g_cp1[i])) & old_block)\
+				>> (i + 1 - g_cp1[i]);
 	}
 	block = block >> 8;
 	return (block);
 }
 
-uint64_t 	pass_cp2(uint64_t old_block)
+uint64_t	pass_cp2(uint64_t old_block)
 {
 	uint64_t	block;
+	int			i;
 
 	block = 0;
-	for (int i = 0; i < 48; i++)
+	i = -1;
+	while (++i < 48)
 	{
 		if (g_cp2[i] - i - 1 > 0)
-			block |= ((1ll << (56 - g_cp2[i])) & old_block) << (g_cp2[i] - i - 1);
+			block |= ((1ll << (56 - g_cp2[i])) & old_block)\
+				<< (g_cp2[i] - i - 1);
 		else
-			block |= ((1ll << (56 - g_cp2[i])) & old_block) >> (i + 1 - g_cp2[i]);
-		// ft_printf("%d", ((1ll << (64 - g_cp1[i])) & old_block) ? 1 : 0);
+			block |= ((1ll << (56 - g_cp2[i])) & old_block)\
+				>> (i + 1 - g_cp2[i]);
 	}
 	block = block >> 8;
 	return (block);
@@ -75,7 +81,7 @@ uint64_t	split_then_pass_cp2(uint64_t keys[16], uint64_t old_block)
 	uint64_t	block;
 	uint32_t	left;
 	uint32_t	right;
-	size_t 		i;
+	size_t		i;
 
 	block = old_block;
 	left = (0xFFFFFFF0000000 & block) >> 28;
@@ -83,37 +89,38 @@ uint64_t	split_then_pass_cp2(uint64_t keys[16], uint64_t old_block)
 	i = -1;
 	while (++i < 16)
 	{
-		left = (L_ROT_28(left, ls[i]) & 0xFFFFFFF);
-		right = (L_ROT_28(right, ls[i]) & 0xFFFFFFF);
-		// ft_printf("C = %028llb\n", left);
-		// ft_printf("D = %028llb\n\n", right);
+		left = (L_ROT_28(left, g_ls[i]) & 0xFFFFFFF);
+		right = (L_ROT_28(right, g_ls[i]) & 0xFFFFFFF);
 		block = (0xffffffff & right) | ((0xFFFFFFFFFFFFFFFF & left) << 28);
 		keys[i] = pass_cp2(block);
-		// ft_printf("%048llb\n", keys[i]);
 	}
 	return (block);
 }
 
-void	get_keys(uint64_t keys[16], char *key, size_t len)
+uint64_t	*get_keys(char *key, size_t len)
 {
-	uint64_t	base_key;
-	uint64_t	block;
-	size_t		len_key;
+	static uint64_t	keys[16] = {0};
+	uint64_t		base_key;
+	uint64_t		block;
 
-	if (key == NULL)
+	if (keys[0] == 0)
 	{
-		ft_fprintf(STDERR_FILENO, "ft_ssl des: key == NULLL\n");
+		if (key == NULL)
+		{
+			ft_fprintf(STDERR_FILENO, "ft_ssl des: key == NULLL\n");
 			exit(-1);
+		}
+		if ((len = ft_strlen(key)) > 16)
+			key[16] = 0;
+		else if (len < 16)
+		{
+			ft_memset(key + len, '0', SIZE_KEY - len);
+			key[16] = 0;
+		}
+		if (!(base_key = ft_atoi_base_64(key, "0123456789ABCDEF")))
+			raise_error(DES, INVALID_KEY, NULL, EXIT);
+		block = pass_cp1(base_key);
+		split_then_pass_cp2(keys, block);
 	}
-	if ((len_key = ft_strlen(key)) > 16)
-		key[16] = 0;
-	else if (len_key < 16)
-	{
-		ft_memset(key + len_key, '0', SIZE_KEY - len_key);
-		key[16] = 0;
-	}
-	if (!(base_key = ft_atoi_base_64(key, "0123456789ABCDEF")))
-		raise_error(DES, INVALID_KEY, NULL, EXIT);
-	block = pass_cp1(base_key);
-	split_then_pass_cp2(keys, block);
+	return (keys);
 }

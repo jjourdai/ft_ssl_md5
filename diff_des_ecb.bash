@@ -44,7 +44,7 @@ do
 
 	./ft_ssl des-cbc -d -k $K -v $K -i test2 | xxd > test3
 	openssl des-cbc -d -K $K -iv $K -in test1 | xxd > test4
-	diff test3 test4 > diff.txt
+	diff test3 test4
 	if [ "$(echo $?)" != "0" ]
 		then
 			exit

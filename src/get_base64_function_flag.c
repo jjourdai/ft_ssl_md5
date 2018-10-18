@@ -13,7 +13,8 @@
 #include <ssl.h>
 #include <colors.h>
 
-static void		fill_target_struct(t_data *target, t_list *parameters, int opt_flag)
+static void		fill_target_struct(t_data *target, t_list *parameters,\
+	int opt_flag)
 {
 	t_list			*tmp;
 	t_parameters	*current;
@@ -28,14 +29,15 @@ static void		fill_target_struct(t_data *target, t_list *parameters, int opt_flag
 		else if (current->type == F_INPUT || current->type == NONE_)
 		{
 			target->param_type = FILE_;
-			target->string = current->str;
+			target->string = (uint8_t*)current->str;
 		}
 		tmp = tmp->next;
 	}
 	ft_lstdel(&parameters, ft_del);
 }
 
-void 				get_params_base64(t_command *cmd, t_list *parameters, int opt_flag)
+void			get_params_base64(t_command *cmd, t_list *parameters,\
+	int opt_flag)
 {
 	t_data target;
 

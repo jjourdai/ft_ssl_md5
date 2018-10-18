@@ -12,7 +12,7 @@
 
 #include "ssl.h"
 
-void	display_des(t_data *info, t_command *cmd)
+void			display_des(t_data *info, t_command *cmd)
 {
 	write(info->fd, info->bytes, info->len);
 	free(info->bytes);
@@ -34,27 +34,16 @@ static void		fill_target_struct(t_data *target, t_list *parameters,\
 		else if (current->type == F_INPUT || current->type == NONE_)
 		{
 			target->param_type = FILE_;
-			target->string = current->str;
+			target->string = (uint8_t*)current->str;
 		}
 		else if (current->type & F_KEY)
-		{
 			ft_memcpy(target->key, current->str, SIZE_KEY);
-		}
 		else if (current->type & F_IVECTOR)
-		{
 			ft_memcpy(target->iv, current->str, SIZE_KEY);
-		}
 		else if (current->type & F_SALT)
-		{
 			ft_memcpy(target->salt, current->str, SIZE_KEY);
-		}
 		else if (current->type & F_PASSWORD)
-		{
-			target->password = ft_strdup(current->str);
-			// ft_memcpy(target->password, current->str, SIZE_KEY);
-		}
-		// else if (current->type & F_PASSWORD)
-		// 	target->password = current->str;
+			ft_memcpy(target->password, current->str, PASSWORD_LEN);
 		tmp = tmp->next;
 	}
 	ft_lstdel(&parameters, ft_del);
@@ -76,27 +65,21 @@ void			run_des_parameters_and_exec(t_command *cmd, t_list *parameters,\
 		close(target.fd);
 }
 
-void			pbkdf2(char *password, uint64_t salt, uint64_t iteration_count, uint64_t derived_key_length)
-{
-	// srand(time(NULL));
-
-	// ft_printf("%llx\n", rand());
-	// fprintf(stdout, "%llx\n", (unsigned long long)time(NULL));
-}
-
 void			des_cbc(t_data *info)
 {
+	uint64_t	salt;
 	uint64_t	iv;
-	size_t		len_key;
-	if ((len_key = ft_strlen((char*)info->iv)) > 16)
-		info->iv[16] = 0;
-	else if (len_key < 16)
+	char		*password;
+
+	iv = (info->iv[0] == 0) ? iv_or_salt_generator() :\
+		iv_or_salt_str_to_bytes((char*)(info->iv));
+	if (info->key[0] == 0)
 	{
-		ft_memset(info->iv + len_key, '0', SIZE_KEY - len_key);
-		info->iv[16] = 0;
+		salt = (info->salt[0] == 0) ? iv_or_salt_generator() :\
+			iv_or_salt_str_to_bytes((char*)(info->salt));
+		password = (info->password[0] == 0) ? ft_memcpy(info->password,\
+			wrap_getpass(), PASSWORD_LEN) : info->password;
 	}
-	if (!(iv = ft_atoi_base_64((char*)info->iv, "0123456789ABCDEF")))
-		raise_error(DES, INVALID_KEY, NULL ,EXIT);
 	if (info->flag & F_DECRYPT)
 		des_cbc_decrypt(info, iv);
 	else
@@ -105,20 +88,6 @@ void			des_cbc(t_data *info)
 
 void			des_ecb(t_data *info)
 {
-	// if (info->password[0] == 0)
-	// {
-	// 	//getch passowrd in stdin
-	// }
-	// if (info->salt[0] == 0)
-	// {
-	// 	//generate salt
-	// }
-	// if (info->key[0] == 0)
-	// {
-	// 	//generate key
-	// 	// pbkdf2(NULL, 0, 0, 0);
-
-	// }
 	if (info->flag & F_DECRYPT)
 		des_ecb_decrypt(info);
 	else

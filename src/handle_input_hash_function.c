@@ -11,13 +11,20 @@
 /* ************************************************************************** */
 
 #include "ssl.h"
-#include "colors.h"
 
-void		run_parameters_and_exec(t_command *cmd, t_list *parameters, int opt_flag)
+void		fill_struct_for_f_string(t_data *target, char *str)
+{
+	target->bytes = (uint8_t*)str;
+	target->param_type = STRING_;
+	target->string = (uint8_t*)str;
+}
+
+void		run_parameters_and_exec(t_command *cmd, t_list *parameters,\
+	int opt_flag)
 {
 	t_list			*tmp;
 	t_parameters	*current;
-	t_data	target;
+	t_data			target;
 
 	tmp = parameters;
 	target.param_type = STDIN_;
@@ -26,11 +33,7 @@ void		run_parameters_and_exec(t_command *cmd, t_list *parameters, int opt_flag)
 		ft_bzero(&target, sizeof(t_data));
 		current = (t_parameters*)tmp->content;
 		if (current->type == F_STRING)
-		{
-			target.bytes = (uint8_t*)current->str;
-			target.param_type = STRING_;
-			target.string = (uint8_t*)current->str;
-		}
+			fill_struct_for_f_string(&target, current->str);
 		else
 		{
 			target.string = (uint8_t*)current->str;

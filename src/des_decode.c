@@ -51,7 +51,7 @@ static void			check_if_corrupted_padding_after_decrypt(t_data *info)
 	ptr = (char*)info->bytes + info->len;
 	quantity = 0;
 	previous_value = 0;
-	i = *(ptr - 1); 
+	i = *(ptr - 1);
 	while (i)
 	{
 		value = *(ptr - i);
@@ -71,7 +71,6 @@ static void			check_if_corrupted_padding_after_decrypt(t_data *info)
 
 void				des_ecb_decrypt(t_data *info)
 {
-	uint64_t	keys[16];
 	size_t		i;
 	char		*encrypted_string;
 	uint64_t	block;
@@ -82,13 +81,12 @@ void				des_ecb_decrypt(t_data *info)
 	check_if_corrupted(info);
 	encrypted_string = ft_memalloc(info->len + 1);
 	i = 0;
-	ft_bzero(keys, sizeof(keys));
-	get_keys(keys, (char*)info->key, ft_strlen((char*)info->key));
 	while (i != info->len)
 	{
 		old_block = SWAP_VALUE(*((uint64_t*)(info->bytes + i)));
 		block = initial_permutation(old_block);
-		block = main_loop_reverse(keys, (0xFFFFFFFF00000000 & block)\
+		block = main_loop_reverse(get_keys((char*)info->key,\
+			ft_strlen((char*)info->key)), (0xFFFFFFFF00000000 & block)\
 			>> 32, (0xFFFFFFFF & block));
 		block = SWAP_VALUE(reverse_permutation(block));
 		ft_memcpy(encrypted_string + i, (char*)(&block), 8);
@@ -102,25 +100,23 @@ void				des_ecb_decrypt(t_data *info)
 
 void				des_cbc_decrypt(t_data *info, uint64_t iv)
 {
-	uint64_t	keys[16];
 	size_t		i;
 	char		*encrypted_string;
 	uint64_t	block;
 	uint64_t	old_block;
+	uint64_t	test;
 
 	if (info->flag & F_BASE64)
 		base64_decode(info);
 	check_if_corrupted(info);
 	encrypted_string = ft_memalloc(info->len + 1);
 	i = 0;
-	ft_bzero(keys, sizeof(keys));
-	get_keys(keys, (char*)info->key, ft_strlen((char*)info->key));
-	uint64_t test;
 	while (i != info->len)
 	{
 		old_block = SWAP_VALUE(*((uint64_t*)(info->bytes + i)));
 		block = initial_permutation(old_block);
-		block = main_loop_reverse(keys, (0xFFFFFFFF00000000 & block)\
+		block = main_loop_reverse(get_keys((char*)info->key,\
+			ft_strlen((char*)info->key)), (0xFFFFFFFF00000000 & block)\
 			>> 32, (0xFFFFFFFF & block));
 		test = reverse_permutation(block);
 		test = test ^ iv;
