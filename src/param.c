@@ -34,21 +34,18 @@ static t_option g_opts[][256] = {
 		{"encode", 'e', F_ENCODE, NULL},
 		{"input", 'i', F_INPUT, store_parameters},
 		{"output", 'o', F_OUTPUT, store_parameters},
-		{NULL, 0, 0, NULL},
 	},
 	[MD5] = {
 		{"print", 'p', F_ECHO, NULL},
 		{"quiet", 'q', F_QUIET, NULL},
 		{"reverse", 'r', F_REVERSE, NULL},
 		{"string", 's', F_STRING, store_parameters},
-		{NULL, 0, 0, NULL},
 	},
-	[SHA256TEST] = {
+	[SHA256] = {
 		{"print", 'p', F_ECHO, NULL},
 		{"quiet", 'q', F_QUIET, NULL},
 		{"reverse", 'r', F_REVERSE, NULL},
 		{"string", 's', F_STRING, store_parameters},
-		{NULL, 0, 0, NULL},
 	},
 	[DES] = {
 		{"base64", 'a', F_BASE64, NULL},
@@ -60,7 +57,6 @@ static t_option g_opts[][256] = {
 		{"password", 'p', F_PASSWORD, store_parameters},
 		{"salt", 's', F_SALT, store_parameters},
 		{"initvector", 'v', F_IVECTOR, store_parameters},
-		{NULL, 0, 0, NULL},
 	},
 	[DES_ECB] = {
 		{"base64", 'a', F_BASE64, NULL},
@@ -72,7 +68,6 @@ static t_option g_opts[][256] = {
 		{"password", 'p', F_PASSWORD, store_parameters},
 		{"salt", 's', F_SALT, store_parameters},
 		{"initvector", 'v', F_IVECTOR, store_parameters},
-		{NULL, 0, 0, NULL},
 	},
 	[DES_CBC] = {
 		{"base64", 'a', F_BASE64, NULL},
@@ -84,7 +79,6 @@ static t_option g_opts[][256] = {
 		{"password", 'p', F_PASSWORD, store_parameters},
 		{"salt", 's', F_SALT, store_parameters},
 		{"initvector", 'v', F_IVECTOR, store_parameters},
-		{NULL, 0, 0, NULL},
 	},
 };
 

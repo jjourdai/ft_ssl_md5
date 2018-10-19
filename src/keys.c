@@ -118,8 +118,9 @@ uint64_t	*get_keys(char *key, size_t len)
 			ft_memset(key + len, '0', SIZE_KEY - len);
 			key[16] = 0;
 		}
-		if (!(base_key = ft_atoi_base_64(key, "0123456789ABCDEF")))
+		if (!string_is_only_hexchar(key))
 			raise_error(DES, INVALID_KEY, NULL, EXIT);
+		base_key = ft_hexa_to_uint64_t(key);
 		block = pass_cp1(base_key);
 		split_then_pass_cp2(keys, block);
 	}

@@ -19,6 +19,8 @@
 # include "fcntl.h"
 # include "errno.h"
 
+#define COUNT_OF(ptr) (sizeof(ptr) / sizeof((ptr)[0]))
+
 # define L_ROT_64(X, C) ((X << C) | (X >> (64 - C)))
 # define R_ROT_64(X, C) ((X >> C) | (X << (64 - C)))
 
@@ -37,7 +39,6 @@
 # define S1(X) ((R_ROT(X[4], 6)) ^ (R_ROT(X[4], 11)) ^ (R_ROT(X[4], 25)))
 # define S0(X) ((R_ROT(X[0], 2)) ^ (R_ROT(X[0], 13)) ^ (R_ROT(X[0], 22)))
 
-//fd stderr sur l'usage
 enum	e_macro {
 	ERROR,
 	SUCCESS,
@@ -47,7 +48,7 @@ enum	e_macro {
 
 enum	e_param_type {
 	MD5 = 0,
-	SHA256TEST = 1,
+	SHA256 = 1,
 	BASE64 = 2,
 	DES,
 	DES_ECB,

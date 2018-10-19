@@ -6,7 +6,7 @@
 /*   By: jjourdai <jjourdai@student42.fr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/03 11:20:09 by jjourdai          #+#    #+#             */
-/*   Updated: 2018/10/18 17:48:17 by jjourdai         ###   ########.fr       */
+/*   Updated: 2018/10/19 14:44:00 by jjourdai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,4 +199,6 @@ uint64_t			ft_atoi_base_64(char *str, char *base);
 uint64_t			swap_bigendian_littleendian(uint64_t number, \
 	size_t sizeoff);
 void				ft_toupper_str(char *str, size_t len);
+uint64_t			ft_hexa_to_uint64_t(char *str);
+int					string_is_only_hexchar(char *str);
 #endif

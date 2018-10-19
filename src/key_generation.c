@@ -35,8 +35,9 @@ uint64_t	iv_or_salt_str_to_bytes(char str[17])
 		ft_memset(str + len_key, '0', SIZE_KEY - len_key);
 		str[16] = 0;
 	}
-	if (!(data = ft_atoi_base_64(str, "0123456789ABCDEF")))
+	if (!string_is_only_hexchar(str))
 		raise_error(DES, INVALID_KEY, NULL, EXIT);
+	data = ft_hexa_to_uint64_t(str);
 	return (data);
 }
 

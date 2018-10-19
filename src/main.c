@@ -15,7 +15,7 @@
 
 static t_command	g_cmd[][6] = {
 	[MD5] = {{MD5, "md5", md5, run_parameters_and_exec, display_hash}},
-	[SHA256TEST] = {{SHA256TEST, "sha256", sha256, run_parameters_and_exec,\
+	[SHA256] = {{SHA256, "sha256", sha256, run_parameters_and_exec,\
 			display_hash}},
 	[BASE64] = {{BASE64, "base64", base64, get_params_base64, display_base64}},
 	[DES] = {{DES, "des", des_ecb, run_des_parameters_and_exec, display_des}},
@@ -23,7 +23,6 @@ static t_command	g_cmd[][6] = {
 			display_des}},
 	[DES_CBC] = {{DES_CBC, "des-cbc", des_cbc, run_des_parameters_and_exec,\
 			display_des}},
-	[END] = {{0, NULL, NULL, NULL, NULL}},
 };
 
 t_command	*get_function(char *str)
@@ -31,7 +30,7 @@ t_command	*get_function(char *str)
 	size_t				i;
 
 	i = -1;
-	while (++i < END)
+	while (++i < COUNT_OF(g_cmd))
 	{
 		if (ft_strcmp(g_cmd[i]->string, str) == 0)
 			return (g_cmd[i]);

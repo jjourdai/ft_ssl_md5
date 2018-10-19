@@ -14,7 +14,7 @@
 
 static char		g_data[][10] = {
 	[MD5] = "MD5",
-	[SHA256TEST] = "SHA256TEST",
+	[SHA256] = "SHA256",
 	[STRING_] = "\"%s\"",
 	[FILE_] = "%s",
 };

@@ -18,9 +18,9 @@ static char g_error[][256] = {
 	[INVALID_COMMAND] = "ft_ssl: '%s' is an invalid command.\n",
 	[USAGE] = "usage: ft_ssl command [-pqrs] [command args]\n\n"
 	"Standard commands:\n\nMessage Digest commands:\nmd5\nsha256\n"
-	"\nCipher commands:\nbase64\ndes\ndes-ebc\ndes-cbc",
+	"\nCipher commands:\nbase64\ndes\ndes-ebc\ndes-cbc\n",
 	[WRONG_LENGTH] = "ft_ssl %s: wrong final block length\n",
-	[INVALID_KEY] = "ft_ssl des: non-hex digit\ninvalid hex key value",
+	[INVALID_KEY] = "ft_ssl des: non-hex digit\ninvalid hex key value\n",
 	[READ_ERROR] = "ft_ssl: Read error in %s\n",
 	[OPEN_FAILED] = "ft_ssl: %s Open failed for %s\n",
 	[WRONG_PASSWD] = "ft_ssl: %s Verify failure\nbad password read\n",
@@ -29,7 +29,7 @@ static char g_error[][256] = {
 static char g_command[][8] = {
 	[BASE64] = "base64",
 	[MD5] = "md5",
-	[SHA256TEST] = "sha256",
+	[SHA256] = "sha256",
 	[DES] = "des",
 	[DES_ECB] = "des-ecb",
 	[DES_CBC] = "des-cbc",
