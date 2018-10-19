@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   display_hash.c                                   :+:      :+:    :+:   */
+/*   display_hash.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jjourdai <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -47,7 +47,7 @@ char		*int_to_char(t_data *target, size_t length, int command)
 	return (hash_str);
 }
 
-void			display_hash(t_data *target, t_command *cmd)
+void		display_hash(t_data *target, t_command *cmd)
 {
 	int				j;
 	char			*hash_str;
@@ -66,8 +66,8 @@ void			display_hash(t_data *target, t_command *cmd)
 			ft_sprintf(str, "%%s %s\n", g_data[target->param_type],\
 					g_data[cmd->command]);
 		else
-			ft_sprintf(str, "%s" MACRO_FOR_TEST "= %%s\n", g_data[cmd->command],\
-					g_data[target->param_type]);
+			ft_sprintf(str, "%s" MACRO_FOR_TEST "= %%s\n",\
+				g_data[cmd->command], g_data[target->param_type]);
 		if (target->flag & F_REVERSE)
 			ft_printf(str, hash_str, target->string);
 		else

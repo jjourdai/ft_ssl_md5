@@ -82,15 +82,30 @@ static t_option g_opts[][256] = {
 	},
 };
 
-t_parameters	*shortname_opt(char **argv, int *i, int command, int *flag)
+t_parameters	*test_options(t_argv *info, int command, int opt_index, char c)
 {
-	int		j;
+	if (g_opts[command][opt_index].f != NULL)
+	{
+		if (info->argv[info->i][info->j + 1] != '\0')
+			return (g_opts[command][opt_index].f(&info->argv[info->i][info->j\
+				+ 1], g_opts[command][opt_index].flag));
+		else if (info->argv[info->i + 1] != NULL)
+			return (g_opts[command][opt_index].f(info->argv[++(info->i)],\
+				g_opts[command][opt_index].flag));
+		else
+			raise_error(command, REQUIRE_ARGUMENT, &c, EXIT);
+	}
+	return (NULL);
+}
+
+t_parameters	*shortname_opt(t_argv *info, int command, int *flag)
+{
 	int		opt_index;
 	char	c;
 	int		flag_has_found;
 
-	j = 0;
-	while ((c = argv[*i][++j]))
+	info->j = 0;
+	while ((c = info->argv[info->i][++info->j]))
 	{
 		opt_index = -1;
 		flag_has_found = 0;
@@ -100,18 +115,7 @@ t_parameters	*shortname_opt(char **argv, int *i, int command, int *flag)
 			{
 				flag_has_found = 1;
 				*flag |= g_opts[command][opt_index].flag;
-				if (g_opts[command][opt_index].f != NULL)
-				{
-					if (argv[*i][j + 1] != '\0')
-						return (g_opts[command][opt_index].f(&argv[*i][j + 1],\
-							g_opts[command][opt_index].flag));
-					else if (argv[*i + 1] != NULL)
-						return (g_opts[command][opt_index].f(argv[++(*i)],\
-							g_opts[command][opt_index].flag));
-					else
-						raise_error(command, REQUIRE_ARGUMENT, &c, EXIT);
-					return (NULL);
-				}
+				return (test_options(info, command, opt_index, c));
 			}
 		}
 		if (flag_has_found != 1)
@@ -122,27 +126,29 @@ t_parameters	*shortname_opt(char **argv, int *i, int command, int *flag)
 
 t_list			*get_params(char **argv, int argc, int command, int *flag)
 {
-	int				i;
 	t_parameters	*new_params;
 	t_list			*parameters;
+	t_argv			info;
 
-	i = 1;
 	parameters = NULL;
-	while (++i < argc)
+	ft_bzero(&info, sizeof(info));
+	info.i = 1;
+	info.argv = argv;
+	while (++info.i < argc)
 	{
-		if (ft_strncmp(argv[i], "--", 2) == 0)
+		if (ft_strncmp(argv[info.i], "--", 2) == 0)
 		{
 			longname_opt(argv[1]);
 		}
-		else if (argv[i][0] == '-')
+		else if (argv[info.i][0] == '-')
 		{
-			if ((new_params = shortname_opt(argv, &i, command, flag)) != NULL)
+			if ((new_params = shortname_opt(&info, command, flag)) != NULL)
 				ft_lstadd_back(&parameters, ft_lstnew(new_params,\
 					sizeof(t_parameters)));
 		}
 		else
-			ft_lstadd_back(&parameters,\
-			ft_lstnew(store_parameters(argv[i], NONE_), sizeof(t_parameters)));
+			ft_lstadd_back(&parameters, ft_lstnew(\
+			store_parameters(argv[info.i], NONE_), sizeof(t_parameters)));
 	}
 	return (parameters);
 }

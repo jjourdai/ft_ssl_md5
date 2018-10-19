@@ -76,9 +76,6 @@ void				des_ecb_decrypt(t_data *info)
 	uint64_t	block;
 	uint64_t	old_block;
 
-	if (info->flag & F_BASE64)
-		base64_decode(info);
-	check_if_corrupted(info);
 	encrypted_string = ft_memalloc(info->len + 1);
 	i = 0;
 	while (i != info->len)
@@ -104,11 +101,8 @@ void				des_cbc_decrypt(t_data *info, uint64_t iv)
 	char		*encrypted_string;
 	uint64_t	block;
 	uint64_t	old_block;
-	uint64_t	test;
+	uint64_t	intermediate;
 
-	if (info->flag & F_BASE64)
-		base64_decode(info);
-	check_if_corrupted(info);
 	encrypted_string = ft_memalloc(info->len + 1);
 	i = 0;
 	while (i != info->len)
@@ -118,10 +112,9 @@ void				des_cbc_decrypt(t_data *info, uint64_t iv)
 		block = main_loop_reverse(get_keys((char*)info->key,\
 			ft_strlen((char*)info->key)), (0xFFFFFFFF00000000 & block)\
 			>> 32, (0xFFFFFFFF & block));
-		test = reverse_permutation(block);
-		test = test ^ iv;
+		intermediate = reverse_permutation(block) ^ iv;
 		iv = old_block;
-		block = SWAP_VALUE(test);
+		block = SWAP_VALUE(intermediate);
 		ft_memcpy(encrypted_string + i, (char*)(&block), 8);
 		i += 8;
 	}

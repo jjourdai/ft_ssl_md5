@@ -65,8 +65,8 @@ void				des_ecb_encrypt(t_data *info)
 	{
 		old_block = SWAP_VALUE(*((uint64_t*)(info->bytes + i)));
 		block = initial_permutation(old_block);
-		block = main_loop(get_keys((char*)info->key, ft_strlen((char*)info->key)),\
-			(0xFFFFFFFF00000000 & block) >> 32,\
+		block = main_loop(get_keys((char*)info->key,\
+			ft_strlen((char*)info->key)), (0xFFFFFFFF00000000 & block) >> 32,
 			(0xFFFFFFFF & block));
 		block = SWAP_VALUE(reverse_permutation(block));
 		ft_memcpy(encrypted_string + i, (char*)(&block), 8);
@@ -79,7 +79,7 @@ void				des_ecb_encrypt(t_data *info)
 		base64_encode(info);
 }
 
-void				des_cbc_encrypt(t_data *info,  uint64_t iv)
+void				des_cbc_encrypt(t_data *info, uint64_t iv)
 {
 	size_t		i;
 	char		*encrypted_string;
@@ -93,8 +93,8 @@ void				des_cbc_encrypt(t_data *info,  uint64_t iv)
 		old_block = SWAP_VALUE(*((uint64_t*)(info->bytes + i)));
 		old_block = iv ^ old_block;
 		block = initial_permutation(old_block);
-		block = main_loop(get_keys((char*)info->key, ft_strlen((char*)info->key)),\
-			(0xFFFFFFFF00000000 & block) >> 32,\
+		block = main_loop(get_keys((char*)info->key,\
+			ft_strlen((char*)info->key)), (0xFFFFFFFF00000000 & block) >> 32,\
 			(0xFFFFFFFF & block));
 		iv = reverse_permutation(block);
 		block = SWAP_VALUE(iv);

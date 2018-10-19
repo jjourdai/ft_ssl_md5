@@ -44,7 +44,7 @@ static int		read_fd(t_data *info, int fd)
 {
 	loop_read_fd(info, fd);
 	if (fd == STDIN_FILENO)
-		info->string = info->bytes;
+		info->string = (uint8_t*)ft_strdup((char*)info->bytes);
 	if (info->bytes != NULL)
 		return (DATA_RECEIVED);
 	return (DATA_NOT_RECEIVED);
@@ -80,6 +80,7 @@ void			exec_read_stdin(t_command *cmd, int opt_flag, t_data *target)
 	{
 		cmd->exec_command(&stdin_input);
 		cmd->display(&stdin_input, cmd);
+		free((char*)stdin_input.string);
 	}
 }
 

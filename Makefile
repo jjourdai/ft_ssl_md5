@@ -12,14 +12,16 @@
 
 SRC_PATH = ./src/
 
-SRC_NAME = main.c \
-		   md5.c \
-		   sha256.c \
-		   handle_input_hash_function.c \
-			 display_hash.c \
-			 exec_command.c \
-			 base64.c \
-			 get_base64_function_flag.c \
+SRC_NAME =	main.c \
+			md5.c \
+			sha256.c \
+			display_hash.c \
+			exec_command.c \
+			base64_encode.c \
+			base64_decode.c \
+			handle_input_function_flag.c \
+			handle_input_hash_function.c \
+			handle_input_crypto_function.c \
 			param.c \
 			des.c \
 			keys.c \
@@ -42,8 +44,8 @@ NAME = ft_ssl
 
 CC = gcc
 
-#CFLAGS = -Wall -Wextra -g -fsanitize=address
-CFLAGS = -Wall -Wextra
+CFLAGS = -Wall -Wextra -g -fsanitize=address
+# CFLAGS = -Wall -Wextra
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
 

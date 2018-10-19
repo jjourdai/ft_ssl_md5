@@ -103,6 +103,12 @@ enum	e_des {
 	PASSWORD_LEN = 128,
 };
 
+typedef struct		s_argv {
+	int				i;
+	int				j;
+	char			**argv;
+}					t_argv;
+
 typedef struct		s_data {
 	uint16_t		flag;
 	uint8_t			param_type;
@@ -178,5 +184,6 @@ uint64_t			iv_or_salt_str_to_bytes(char str[17]);
 char				*wrap_getpass(void);
 t_command			*get_function(char *str);
 char				*int_to_char(t_data *target, size_t length, int command);
+void				check_if_corrupted(t_data *info);
 
 #endif

@@ -106,18 +106,9 @@ uint64_t	*get_keys(char *key, size_t len)
 	if (keys[0] == 0)
 	{
 		ft_toupper_str(key, len);
-		if (key == NULL)
-		{
-			ft_fprintf(STDERR_FILENO, "ft_ssl des: key == NULLL\n");
-			exit(-1);
-		}
-		if ((len = ft_strlen(key)) > 16)
-			key[16] = 0;
-		else if (len < 16)
-		{
+		if (len < 16)
 			ft_memset(key + len, '0', SIZE_KEY - len);
-			key[16] = 0;
-		}
+		key[16] = 0;
 		if (!string_is_only_hexchar(key))
 			raise_error(DES, INVALID_KEY, NULL, EXIT);
 		base_key = ft_hexa_to_uint64_t(key);

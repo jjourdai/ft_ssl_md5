@@ -1,20 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_base64_function_flag.c                         :+:      :+:    :+:   */
+/*   handle_input_crypto_function.c                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jjourdai <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/09/19 13:16:45 by jjourdai          #+#    #+#             */
-/*   Updated: 2018/09/19 14:43:34 by jjourdai         ###   ########.fr       */
+/*   Created: 2018/10/19 15:56:03 by jjourdai          #+#    #+#             */
+/*   Updated: 2018/10/19 15:56:05 by jjourdai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <ssl.h>
-#include <colors.h>
+#include "ssl.h"
 
-static void		fill_target_struct(t_data *target, t_list *parameters,\
-	int opt_flag)
+static void		fill_target_struct(t_data *target, t_list *parameters)
 {
 	t_list			*tmp;
 	t_parameters	*current;
@@ -31,19 +29,27 @@ static void		fill_target_struct(t_data *target, t_list *parameters,\
 			target->param_type = FILE_;
 			target->string = (uint8_t*)current->str;
 		}
+		else if (current->type & F_KEY)
+			ft_memcpy(target->key, current->str, SIZE_KEY);
+		else if (current->type & F_IVECTOR)
+			ft_memcpy(target->iv, current->str, SIZE_KEY);
+		else if (current->type & F_SALT)
+			ft_memcpy(target->salt, current->str, SIZE_KEY);
+		else if (current->type & F_PASSWORD)
+			ft_memcpy(target->password, current->str, PASSWORD_LEN);
 		tmp = tmp->next;
 	}
-	ft_lstdel(&parameters, ft_del);
 }
 
-void			get_params_base64(t_command *cmd, t_list *parameters,\
+void			run_des_parameters_and_exec(t_command *cmd, t_list *parameters,\
 	int opt_flag)
 {
 	t_data target;
 
 	ft_bzero(&target, sizeof(target));
 	target.fd = STDOUT_FILENO;
-	fill_target_struct(&target, parameters, opt_flag);
+	fill_target_struct(&target, parameters);
+	ft_lstdel(&parameters, ft_del);
 	if (target.param_type == STDIN_)
 		exec_read_stdin(cmd, opt_flag, &target);
 	else

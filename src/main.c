@@ -39,7 +39,7 @@ t_command	*get_function(char *str)
 	return (NULL);
 }
 
-int					main(int argc, char **argv)
+int			main(int argc, char **argv)
 {
 	t_command	*cmd;
 	t_list		*parameters;
