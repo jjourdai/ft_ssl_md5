@@ -6,7 +6,7 @@
 /*   By: jjourdai <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/23 18:46:24 by jjourdai          #+#    #+#             */
-/*   Updated: 2018/10/19 14:44:03 by jjourdai         ###   ########.fr       */
+/*   Updated: 2018/10/19 17:11:28 by jjourdai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static int	caract(char c, char *base)
 {
-	int i;
+	int		i;
 
 	i = 0;
 	while (base[i] && base[i] != c)
@@ -22,11 +22,11 @@ static int	caract(char c, char *base)
 	return (i);
 }
 
-int	string_is_only_hexchar(char *str)
+int			string_is_only_hexchar(char *str)
 {
-	int i;
-	int j;
-	char 	*base = "0123456789ABCDEFabcdef";
+	int			i;
+	int			j;
+	static char *base = "0123456789ABCDEFabcdef";
 
 	i = 0;
 	while ((str[i] == '\n') || (str[i] == '\t') || (str[i] == '\v') ||
@@ -51,7 +51,7 @@ uint64_t	ft_hexa_to_uint64_t(char *str)
 	int			i;
 	uint64_t	nbr;
 	uint64_t	prev_nbr;
-	char		*base = "0123456789ABCDEF";
+	static char	*base = "0123456789ABCDEF";
 
 	nbr = 0;
 	prev_nbr = 0;
