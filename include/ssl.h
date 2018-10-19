@@ -185,5 +185,6 @@ char				*wrap_getpass(void);
 t_command			*get_function(char *str);
 char				*int_to_char(t_data *target, size_t length, int command);
 void				check_if_corrupted(t_data *info);
+char				*generate_key(uint64_t salt, char *password);
 
 #endif

@@ -19,27 +19,6 @@ void			display_des(t_data *info, t_command *cmd)
 	free(info->bytes);
 }
 
-char			*generate_key(uint64_t salt, char *password)
-{
-	t_data	get_md5_key;
-	char	*str;
-	char	*concat;
-	char	*hash_str;
-
-	ft_bzero(&get_md5_key, sizeof(get_md5_key));
-	salt = SWAP_VALUE(salt);
-	str = ((char*)&salt);
-	concat = ft_memalloc(128);
-	ft_memcpy(concat, password, ft_strlen(password));
-	ft_memcpy(concat + ft_strlen(password), str, 8);
-	get_md5_key.bytes = (uint8_t*)concat;
-	get_md5_key.len = ft_strlen(concat);
-	md5(&get_md5_key);
-	hash_str = int_to_char(&get_md5_key, 4, MD5);
-	hash_str[16] = 0;
-	return (hash_str);
-}
-
 void			des_cbc(t_data *info)
 {
 	uint64_t	salt;
@@ -55,6 +34,7 @@ void			des_cbc(t_data *info)
 		password = (info->password[0] == 0) ? ft_memcpy(info->password,\
 			wrap_getpass(), PASSWORD_LEN) : info->password;
 		ft_memcpy(info->key, generate_key(salt, password), SIZE_KEY);
+		exit(0);
 	}
 	if (info->flag & F_DECRYPT)
 	{

@@ -30,6 +30,7 @@ SRC_NAME =	main.c \
 			core_des.c \
 			error_msg.c \
 			key_generation.c \
+			pbkdf2.c \
 
 
 OBJ_PATH = ./.obj/

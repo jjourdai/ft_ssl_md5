@@ -55,3 +55,24 @@ char		*wrap_getpass(void)
 		raise_error(DES, WRONG_PASSWD, NULL, EXIT);
 	return (ret0);
 }
+
+
+char			*generate_key(uint64_t salt, char *password)
+{
+	t_data	get_md5_key;
+	char	*str;
+	char	*concat;
+	char	*hash_str;
+
+	ft_bzero(&get_md5_key, sizeof(get_md5_key));
+	salt = SWAP_VALUE(salt);
+	str = ((char*)&salt);
+	concat = ft_memalloc(128);
+	ft_memcpy(concat, password, ft_strlen(password));
+	ft_memcpy(concat + ft_strlen(password), str, 8);
+	get_md5_key.bytes = (uint8_t*)concat;
+	get_md5_key.len = ft_strlen(concat);
+	md5(&get_md5_key);
+	hash_str = int_to_char(&get_md5_key, 4, MD5);
+	return (hash_str);
+}
