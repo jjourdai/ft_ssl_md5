@@ -201,4 +201,6 @@ uint64_t			swap_bigendian_littleendian(uint64_t number, \
 void				ft_toupper_str(char *str, size_t len);
 uint64_t			ft_hexa_to_uint64_t(char *str);
 int					string_is_only_hexchar(char *str);
+void				ft_move_data(char *data, int len, int size);
+
 #endif

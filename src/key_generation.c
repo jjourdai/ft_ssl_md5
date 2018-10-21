@@ -67,12 +67,46 @@ char			*generate_key(uint64_t salt, char *password)
 	ft_bzero(&get_md5_key, sizeof(get_md5_key));
 	salt = SWAP_VALUE(salt);
 	str = ((char*)&salt);
-	concat = ft_memalloc(128);
+	concat = ft_memalloc(PASSWORD_LEN + SIZE_KEY);
 	ft_memcpy(concat, password, ft_strlen(password));
 	ft_memcpy(concat + ft_strlen(password), str, 8);
 	get_md5_key.bytes = (uint8_t*)concat;
-	get_md5_key.len = ft_strlen(concat);
+	get_md5_key.len = ft_strlen(password) + 8;
 	md5(&get_md5_key);
 	hash_str = int_to_char(&get_md5_key, 4, MD5);
 	return (hash_str);
+}
+
+
+char			*generate_key_des3(uint64_t salt, char *password)
+{
+	t_data	get_md5_key;
+	char	*key_concat;
+	char	*str;
+	char	*concat;
+	char	*hash_str;
+
+	key_concat = ft_memalloc(DES3_KEY_LEN + 1000);
+
+	ft_bzero(&get_md5_key, sizeof(get_md5_key));
+	salt = SWAP_VALUE(salt);
+	str = ((char*)&salt);
+	concat = ft_memalloc(PASSWORD_LEN + DES3_KEY_LEN);
+	ft_memcpy(concat, password, ft_strlen(password));
+	ft_memcpy(concat + ft_strlen(password), str, 8);
+	get_md5_key.bytes = (uint8_t*)concat;
+	get_md5_key.len = ft_strlen(password) + 8;
+	md5(&get_md5_key);
+	ft_memcpy(key_concat, int_to_char(&get_md5_key, 4, MD5), 32);
+	char *test = (char*)get_md5_key.final_hash;
+	ft_bzero(concat, PASSWORD_LEN + DES3_KEY_LEN);
+	ft_memcpy(concat, test, 16);
+	ft_memcpy(concat + 16, password, ft_strlen(password));
+	ft_memcpy(concat + 16 + ft_strlen(password), str, 8);
+	get_md5_key.bytes = (uint8_t*)concat;
+	get_md5_key.len = 16 + ft_strlen(password) + 8;
+	md5(&get_md5_key);
+	ft_memcpy(key_concat + 32, int_to_char(&get_md5_key, 4, MD5), 32);
+	ft_memdel((void**)&concat);
+	return (key_concat);
 }

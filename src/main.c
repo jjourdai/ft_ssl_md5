@@ -23,6 +23,8 @@ static t_command	g_cmd[][6] = {
 			display_des}},
 	[DES_CBC] = {{DES_CBC, "des-cbc", des_cbc, run_des_parameters_and_exec,\
 			display_des}},
+	[DES3] = {{DES3, "des3", des3, run_des_parameters_and_exec,\
+			display_des}},
 };
 
 t_command	*get_function(char *str)

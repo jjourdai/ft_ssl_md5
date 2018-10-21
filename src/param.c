@@ -80,6 +80,17 @@ static t_option g_opts[][256] = {
 		{"salt", 's', F_SALT, store_parameters},
 		{"initvector", 'v', F_IVECTOR, store_parameters},
 	},
+	[DES3] = {
+		{"base64", 'a', F_BASE64, NULL},
+		{"decrypt", 'd', F_DECRYPT, NULL},
+		{"encrypt", 'e', F_ENCRYPT, NULL},
+		{"input", 'i', F_INPUT, store_parameters},
+		{"key", 'k', F_KEY, store_parameters},
+		{"output", 'o', F_OUTPUT, store_parameters},
+		{"password", 'p', F_PASSWORD, store_parameters},
+		{"salt", 's', F_SALT, store_parameters},
+		{"initvector", 'v', F_IVECTOR, store_parameters},
+	},
 };
 
 t_parameters	*test_options(t_argv *info, int command, int opt_index, char c)

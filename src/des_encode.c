@@ -31,7 +31,7 @@ static uint64_t		main_loop(uint64_t keys[16], uint32_t left, uint64_t right)
 	return ((0xffffffff & left) | ((0xffffffff & right) << 32));
 }
 
-static char			*put_padding_character(t_data *info)
+char			*put_padding_character(t_data *info)
 {
 	size_t	len;
 	size_t	new_len;
@@ -39,9 +39,7 @@ static char			*put_padding_character(t_data *info)
 
 	len = info->len;
 	if (len % 8)
-	{
 		new_len = info->len + 8 - (len % 8);
-	}
 	else
 		new_len = info->len + 8;
 	padded_string = ft_memalloc(new_len + 1);
@@ -52,21 +50,19 @@ static char			*put_padding_character(t_data *info)
 	return (padded_string);
 }
 
-void				des_ecb_encrypt(t_data *info)
+void				des_ecb_encrypt(t_data *info, char *encrypted_string)
 {
 	size_t		i;
-	char		*encrypted_string;
 	uint64_t	block;
 	uint64_t	old_block;
 
-	encrypted_string = put_padding_character(info);
 	i = 0;
 	while (i != info->len)
 	{
 		old_block = SWAP_VALUE(*((uint64_t*)(info->bytes + i)));
 		block = initial_permutation(old_block);
 		block = main_loop(get_keys((char*)info->key,\
-			ft_strlen((char*)info->key)), (0xFFFFFFFF00000000 & block) >> 32,
+			ft_strlen((char*)info->key), i), (0xFFFFFFFF00000000 & block) >> 32,
 			(0xFFFFFFFF & block));
 		block = SWAP_VALUE(reverse_permutation(block));
 		ft_memcpy(encrypted_string + i, (char*)(&block), 8);
@@ -75,18 +71,14 @@ void				des_ecb_encrypt(t_data *info)
 	if (info->bytes != NULL)
 		free(info->bytes);
 	info->bytes = (uint8_t*)encrypted_string;
-	if (info->flag & F_BASE64)
-		base64_encode(info);
 }
 
-void				des_cbc_encrypt(t_data *info, uint64_t iv)
+void				des_cbc_encrypt(t_data *info, uint64_t iv, char *encrypted_string)
 {
 	size_t		i;
-	char		*encrypted_string;
 	uint64_t	block;
 	uint64_t	old_block;
 
-	encrypted_string = put_padding_character(info);
 	i = 0;
 	while (i != info->len)
 	{
@@ -94,7 +86,7 @@ void				des_cbc_encrypt(t_data *info, uint64_t iv)
 		old_block = iv ^ old_block;
 		block = initial_permutation(old_block);
 		block = main_loop(get_keys((char*)info->key,\
-			ft_strlen((char*)info->key)), (0xFFFFFFFF00000000 & block) >> 32,\
+			ft_strlen((char*)info->key), i), (0xFFFFFFFF00000000 & block) >> 32,\
 			(0xFFFFFFFF & block));
 		iv = reverse_permutation(block);
 		block = SWAP_VALUE(iv);
@@ -104,6 +96,23 @@ void				des_cbc_encrypt(t_data *info, uint64_t iv)
 	if (info->bytes != NULL)
 		free(info->bytes);
 	info->bytes = (uint8_t*)encrypted_string;
-	if (info->flag & F_BASE64)
-		base64_encode(info);
+}
+
+void				des3_encrypt(t_data *info, uint64_t iv)
+{
+	char key1[17] = {0};
+	char key2[17] = {0};
+	char key3[17] = {0};
+
+	ft_memcpy(key1, info->key, SIZE_KEY);
+	ft_memcpy(key2, info->key + SIZE_KEY, SIZE_KEY);
+	ft_memcpy(key3, info->key + SIZE_KEY * 2, SIZE_KEY);
+
+	ft_bzero(info->key, sizeof(info->key));
+	ft_memcpy(info->key, key1, SIZE_KEY);
+	des_cbc_encrypt(info, iv, put_padding_character(info));
+	ft_memcpy(info->key, key2, SIZE_KEY);
+	des_cbc_decrypt(info, iv);
+	ft_memcpy(info->key, key3, SIZE_KEY);
+	des_cbc_encrypt(info, iv, ft_memalloc(info->len));
 }

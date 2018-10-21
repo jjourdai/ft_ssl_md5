@@ -33,6 +33,7 @@ static char g_command[][8] = {
 	[DES] = "des",
 	[DES_ECB] = "des-ecb",
 	[DES_CBC] = "des-cbc",
+	[DES3] = "des3",
 };
 
 void	raise_error(int cmd, int value, char *str, int flag)
