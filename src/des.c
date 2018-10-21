@@ -72,6 +72,8 @@ void			des_cbc(t_data *info)
 		ft_memcpy(info->key, key, SIZE_KEY);
 		ft_memdel((void**)&key);
 	}
+	else 
+		padd_key((char*)info->key, SIZE_KEY);
 	if (info->flag & F_DECRYPT)
 	{
 		if (info->flag & F_BASE64)
@@ -108,6 +110,8 @@ void			des_ecb(t_data *info)
 		ft_memcpy(info->key, key, SIZE_KEY);
 		ft_memdel((void**)&key);
 	}
+	else 
+		padd_key((char*)info->key, SIZE_KEY);
 	if (info->flag & F_DECRYPT)
 	{
 		if (info->flag & F_BASE64)
@@ -145,9 +149,10 @@ void			des3(t_data *info)
 		ft_memcpy(info->key, key, DES3_KEY_LEN);
 		ft_memdel((void**)&key);
 	}
-	else 
+	else
 		padd_key((char*)info->key, DES3_KEY_LEN);
-	iv = iv_or_salt_str_to_bytes((char*)info->key + DES3_KEY_LEN - 16);
+	iv = (info->iv[0] == 0) ? iv_or_salt_str_to_bytes((char*)(info->key + DES3_KEY_LEN - 16)) :\
+		iv_or_salt_str_to_bytes((char*)(info->iv));
 	if (info->flag & F_DECRYPT)
 	{
 		if (info->flag & F_BASE64)

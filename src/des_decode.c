@@ -131,7 +131,6 @@ void				des3_decrypt(t_data *info, uint64_t iv)
 	ft_memcpy(key1, info->key, SIZE_KEY);
 	ft_memcpy(key2, info->key + SIZE_KEY, SIZE_KEY);
 	ft_memcpy(key3, info->key + SIZE_KEY * 2, SIZE_KEY);
-	
 	ft_bzero(info->key, sizeof(info->key));
 	ft_memcpy(info->key, key3, SIZE_KEY);
 	des_cbc_decrypt(info, iv);

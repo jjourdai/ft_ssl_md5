@@ -103,7 +103,7 @@ void		padd_key(char *key, size_t klen)
 
 	len = ft_strlen(key);
 	ft_toupper_str(key, len);
-	if (len < 16)
+	if (len < klen)
 		ft_memset(key + len, '0', klen - len);
 	key[klen] = 0;
 }

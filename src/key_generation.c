@@ -23,11 +23,12 @@ uint64_t	iv_or_salt_generator(void)
 	return (*(uint64_t*)buffer);
 }
 
-uint64_t	iv_or_salt_str_to_bytes(char str[17])
+uint64_t	iv_or_salt_str_to_bytes(char *str)
 {
 	size_t		len_key;
 	uint64_t	data;
 
+	ft_toupper_str(str, 16);
 	if ((len_key = ft_strlen(str)) > 16)
 		str[16] = 0;
 	else if (len_key < 16)
