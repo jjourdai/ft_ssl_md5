@@ -20,6 +20,7 @@ uint64_t	iv_or_salt_generator(void)
 	if ((fd = open("/dev/random", O_RDONLY)) == -1)
 		raise_error(DES, OPEN_FAILED, "/dev/random", EXIT);
 	read(fd, buffer, 8);
+	close(fd);
 	return (*(uint64_t*)buffer);
 }
 
@@ -33,7 +34,7 @@ uint64_t	iv_or_salt_str_to_bytes(char *str)
 		str[16] = 0;
 	else if (len_key < 16)
 	{
-		ft_memset(str + len_key, '0', SIZE_KEY - len_key);
+		ft_memset(str + len_key, '0', DES_KEY_LEN - len_key);
 		str[16] = 0;
 	}
 	if (!string_is_only_hexchar(str))
@@ -68,7 +69,7 @@ char			*generate_key(uint64_t salt, char *password)
 	ft_bzero(&get_md5_key, sizeof(get_md5_key));
 	salt = SWAP_VALUE(salt);
 	str = ((char*)&salt);
-	concat = ft_memalloc(PASSWORD_LEN + SIZE_KEY);
+	concat = ft_memalloc(PASSWORD_LEN + DES_KEY_LEN);
 	ft_memcpy(concat, password, ft_strlen(password));
 	ft_memcpy(concat + ft_strlen(password), str, 8);
 	get_md5_key.bytes = (uint8_t*)concat;

@@ -108,21 +108,15 @@ void		padd_key(char *key, size_t klen)
 	key[klen] = 0;
 }
 
-uint64_t	*get_keys(char *key, size_t len, int i)
+void		get_keys(uint64_t keys[16], char *key, size_t len)
 {
-	static uint64_t	keys[16] = {0};
 	uint64_t		base_key;
 	uint64_t		block;
-	if (i == 0)
-		ft_bzero(keys, sizeof(keys));
-	if (keys[0] == 0)
-	{
-		padd_key(key, SIZE_KEY);
-		if (!string_is_only_hexchar(key))
-			raise_error(DES, INVALID_KEY, NULL, EXIT);
-		base_key = ft_hexa_to_uint64_t(key);
-		block = pass_cp1(base_key);
-		split_then_pass_cp2(keys, block);
-	}
-	return (keys);
+
+	padd_key(key, DES_KEY_LEN);
+	if (!string_is_only_hexchar(key))
+		raise_error(DES, INVALID_KEY, NULL, EXIT);
+	base_key = ft_hexa_to_uint64_t(key);
+	block = pass_cp1(base_key);
+	split_then_pass_cp2(keys, block);
 }

@@ -75,15 +75,16 @@ void				des_ecb_decrypt(t_data *info)
 	char		*encrypted_string;
 	uint64_t	block;
 	uint64_t	old_block;
+	uint64_t	keys[16];
 
-	encrypted_string = ft_memalloc(info->len + 8);
+	get_keys(keys, (char*)info->key, ft_strlen((char*)info->key));
+	encrypted_string = ft_memalloc(info->len);
 	i = 0;
 	while (i != info->len)
 	{
 		old_block = SWAP_VALUE(*((uint64_t*)(info->bytes + i)));
 		block = initial_permutation(old_block);
-		block = main_loop_reverse(get_keys((char*)info->key,\
-			ft_strlen((char*)info->key), i), (0xFFFFFFFF00000000 & block)\
+		block = main_loop_reverse(keys, (0xFFFFFFFF00000000 & block)\
 			>> 32, (0xFFFFFFFF & block));
 		block = SWAP_VALUE(reverse_permutation(block));
 		ft_memcpy(encrypted_string + i, (char*)(&block), 8);
@@ -94,26 +95,35 @@ void				des_ecb_decrypt(t_data *info)
 	info->bytes = (uint8_t*)encrypted_string;
 }
 
+uint64_t			update_block_cbc_decrypt(t_data *info, uint64_t keys[16], uint64_t iv, uint64_t old_block)
+{
+	uint64_t	block;
+	uint64_t	intermediate;
+
+	block = initial_permutation(old_block);
+	block = main_loop_reverse(keys, (0xFFFFFFFF00000000 & block)\
+		>> 32, (0xFFFFFFFF & block));
+	intermediate = reverse_permutation(block) ^ iv;
+	return (intermediate);
+}
+
 void				des_cbc_decrypt(t_data *info, uint64_t iv)
 {
 	size_t		i;
 	char		*encrypted_string;
 	uint64_t	block;
 	uint64_t	old_block;
-	uint64_t	intermediate;
+	uint64_t	keys[16];
 
+	get_keys(keys, (char*)info->key, ft_strlen((char*)info->key));
 	encrypted_string = ft_memalloc(info->len + 8);
 	i = 0;
 	while (i != info->len)
 	{
 		old_block = SWAP_VALUE(*((uint64_t*)(info->bytes + i)));
-		block = initial_permutation(old_block);
-		block = main_loop_reverse(get_keys((char*)info->key,\
-			ft_strlen((char*)info->key), i), (0xFFFFFFFF00000000 & block)\
-			>> 32, (0xFFFFFFFF & block));
-		intermediate = reverse_permutation(block) ^ iv;
+		block = update_block_cbc_decrypt(info, keys, iv, old_block);
 		iv = old_block;
-		block = SWAP_VALUE(intermediate);
+		block = SWAP_VALUE(block);
 		ft_memcpy(encrypted_string + i, (char*)(&block), 8);
 		i += 8;
 	}
@@ -122,20 +132,37 @@ void				des_cbc_decrypt(t_data *info, uint64_t iv)
 	info->bytes = (uint8_t*)encrypted_string;
 }
 
-void				des3_decrypt(t_data *info, uint64_t iv)
+void				des3_decrypt(t_data *info, uint64_t iv, char *decrypted_string)
 {
-	char key1[17] = {0};
-	char key2[17] = {0};
-	char key3[17] = {0};
+	uint64_t keys1[16];
+	uint64_t keys2[16];
+	uint64_t keys3[16];
 
-	ft_memcpy(key1, info->key, SIZE_KEY);
-	ft_memcpy(key2, info->key + SIZE_KEY, SIZE_KEY);
-	ft_memcpy(key3, info->key + SIZE_KEY * 2, SIZE_KEY);
-	ft_bzero(info->key, sizeof(info->key));
-	ft_memcpy(info->key, key3, SIZE_KEY);
-	des_cbc_decrypt(info, iv);
-	ft_memcpy(info->key, key2, SIZE_KEY);
-	des_cbc_encrypt(info, iv, ft_memalloc(info->len));
-	ft_memcpy(info->key, key1, SIZE_KEY);
-	des_cbc_decrypt(info, iv);
+	// ft_putendl_fd((char*)info->key, 2);
+	// ft_putendl_fd((char*)info->key + DES_KEY_LEN, 2);
+	// ft_putendl_fd((char*)info->key + DES_KEY_LEN * 2, 2);
+
+	get_keys(keys3, (char*)info->key + DES_KEY_LEN * 2, DES_KEY_LEN);
+	get_keys(keys2, (char*)info->key + DES_KEY_LEN, DES_KEY_LEN);
+	get_keys(keys1, (char*)info->key, DES_KEY_LEN);
+
+	size_t		i;
+	uint64_t	block;
+	uint64_t	old_block;
+
+	i = 0;
+	while (i != info->len)
+	{
+		old_block = SWAP_VALUE(*((uint64_t*)(info->bytes + i)));
+		block = update_block_cbc_decrypt(info, keys3, iv, old_block);
+		block = update_block_cbc_encrypt(info, keys2, iv, block);
+		block = update_block_cbc_decrypt(info, keys1, iv, block);
+		iv = old_block;
+		block = SWAP_VALUE(block);
+		ft_memcpy(decrypted_string + i, (char*)(&block), 8);
+		i += 8;
+	}
+	if (info->bytes != NULL)
+		free(info->bytes);
+	info->bytes = (uint8_t*)decrypted_string;
 }

@@ -32,9 +32,9 @@ static void		fill_target_struct(t_data *target, t_list *parameters)
 		else if (current->type & F_KEY)
 			ft_memcpy(target->key, current->str, (ft_strlen(current->str) > DES3_KEY_LEN) ? DES3_KEY_LEN : ft_strlen(current->str));
 		else if (current->type & F_IVECTOR)
-			ft_memcpy(target->iv, current->str, SIZE_KEY);
+			ft_memcpy(target->iv, current->str, DES_KEY_LEN);
 		else if (current->type & F_SALT)
-			ft_memcpy(target->salt, current->str, SIZE_KEY);
+			ft_memcpy(target->salt, current->str, DES_KEY_LEN);
 		else if (current->type & F_PASSWORD)
 			ft_memcpy(target->password, current->str, PASSWORD_LEN);
 		tmp = tmp->next;

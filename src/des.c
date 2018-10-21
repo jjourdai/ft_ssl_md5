@@ -16,12 +16,19 @@ void				remove_salted(t_data *info)
 {
 	uint64_t	salt;
 	char		*salt_str;
+	size_t		size;
 
 	if (ft_strncmp(SALTED, (char*)info->bytes, ft_strlen(SALTED)) == 0)
 	{
 		salt = *((uint64_t*)(info->bytes + 8));
-		salt_str = ft_itoa_base_ll(SWAP_VALUE(salt), "0123456789ABCDEF");
-		ft_memcpy(info->salt, salt_str, 16);
+		salt_str = ft_itoa_base_ull(SWAP_VALUE(salt), "0123456789ABCDEF");
+		if ((size = ft_strlen(salt_str)) != 16)
+		{
+			ft_memset(info->salt, '0', DES_KEY_LEN - size);
+			ft_memcpy(info->salt + DES_KEY_LEN - size, salt_str, 16);
+		}
+		else
+			ft_memcpy(info->salt, salt_str, 16);
 		free(salt_str);
 		ft_move_data((char*)info->bytes, info->len, 16);
 		info->len -= 16;
@@ -34,7 +41,7 @@ void				add_salted(t_data *info, uint64_t salt)
 	size_t	size;
 
 	size = ft_strlen(SALTED);
-	new_ptr = ft_memalloc(info->len + 24);
+	new_ptr = ft_memalloc(info->len + 16);
 	salt = SWAP_VALUE(salt);
 	ft_memcpy(new_ptr, SALTED, size);
 	ft_memcpy(new_ptr + size, (char*)&salt, 8);
@@ -69,11 +76,11 @@ void			des_cbc(t_data *info)
 		password = (info->password[0] == 0) ? ft_memcpy(info->password,\
 			wrap_getpass(), PASSWORD_LEN) : info->password;
 		key = generate_key(salt, password);
-		ft_memcpy(info->key, key, SIZE_KEY);
+		ft_memcpy(info->key, key, DES_KEY_LEN);
 		ft_memdel((void**)&key);
 	}
 	else 
-		padd_key((char*)info->key, SIZE_KEY);
+		padd_key((char*)info->key, DES_KEY_LEN);
 	if (info->flag & F_DECRYPT)
 	{
 		if (info->flag & F_BASE64)
@@ -107,11 +114,11 @@ void			des_ecb(t_data *info)
 		password = (info->password[0] == 0) ? ft_memcpy(info->password,\
 			wrap_getpass(), PASSWORD_LEN) : info->password;
 		key = generate_key(salt, password);
-		ft_memcpy(info->key, key, SIZE_KEY);
+		ft_memcpy(info->key, key, DES_KEY_LEN);
 		ft_memdel((void**)&key);
 	}
 	else 
-		padd_key((char*)info->key, SIZE_KEY);
+		padd_key((char*)info->key, DES_KEY_LEN);
 	if (info->flag & F_DECRYPT)
 	{
 		if (info->flag & F_BASE64)
@@ -158,12 +165,12 @@ void			des3(t_data *info)
 		if (info->flag & F_BASE64)
 			base64_decode(info);
 		check_if_corrupted(DES3, info);
-		des3_decrypt(info, iv);
+		des3_decrypt(info, iv, ft_memalloc(info->len));
 		check_if_corrupted_padding_after_decrypt(info);
 	}
 	else
 	{
-		des3_encrypt(info, iv);
+		des3_encrypt(info, iv, put_padding_character(info));
 		if (info->flag & F_PASSWORD)
 			add_salted(info, salt);
 		if (info->flag & F_BASE64)

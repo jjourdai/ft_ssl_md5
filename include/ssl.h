@@ -102,7 +102,7 @@ enum	e_des {
 	F_SALT = (1 << 13),
 	F_IVECTOR = (1 << 14),
 	DES3_KEY_LEN = 64,
-	SIZE_KEY = 16,
+	DES_KEY_LEN = 16,
 	PASSWORD_LEN = 128,
 };
 
@@ -118,8 +118,8 @@ typedef struct		s_data {
 	uint8_t			*string;
 	uint8_t			*bytes;
 	uint8_t			key[DES3_KEY_LEN + 1];
-	uint8_t			iv[SIZE_KEY + 1];
-	uint8_t			salt[SIZE_KEY + 1];
+	uint8_t			iv[DES_KEY_LEN + 1];
+	uint8_t			salt[DES_KEY_LEN + 1];
 	uint8_t			password[PASSWORD_LEN + 1];
 	uint64_t		len;
 	int				fd;
@@ -170,13 +170,13 @@ void				des_cbc(t_data *info);
 void				display_des(t_data *info, t_command *cmd);
 void				run_des_parameters_and_exec(t_command *cmd,\
 	t_list *list, int opt_flag);
-uint64_t			*get_keys(char *key, size_t len, int i);
+void				get_keys(uint64_t keys[16], char *key, size_t len);
 void				des_ecb_encrypt(t_data *info, char *result);
 void				des_ecb_decrypt(t_data *info);
 void				des_cbc_encrypt(t_data *info, uint64_t iv, char *result);
 void				des_cbc_decrypt(t_data *info, uint64_t iv);
-void				des3_encrypt(t_data *info, uint64_t iv);
-void				des3_decrypt(t_data *info, uint64_t iv);
+void				des3_encrypt(t_data *info, uint64_t iv, char *encrypted_string);
+void				des3_decrypt(t_data *info, uint64_t iv, char *decrypted_string);
 uint64_t			reverse_permutation(uint64_t old_block);
 uint64_t			substitutions(uint64_t d0);
 uint64_t			initial_permutation(uint64_t block);
@@ -197,5 +197,7 @@ void				check_if_corrupted_padding_after_decrypt(t_data *info);
 void				padd_key(char *key, size_t klen);
 char				*put_padding_character(t_data *info);
 void				remove_salted(t_data *info);
+uint64_t			update_block_cbc_encrypt(t_data *info, uint64_t keys[16], uint64_t iv, uint64_t block);
+uint64_t			update_block_cbc_decrypt(t_data *info, uint64_t keys[16], uint64_t iv, uint64_t block);
 
 #endif
