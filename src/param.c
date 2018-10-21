@@ -114,6 +114,7 @@ t_parameters	*shortname_opt(t_argv *info, int command, int *flag)
 	int		opt_index;
 	char	c;
 	int		flag_has_found;
+	t_parameters	*new;
 
 	info->j = 0;
 	while ((c = info->argv[info->i][++info->j]))
@@ -126,7 +127,8 @@ t_parameters	*shortname_opt(t_argv *info, int command, int *flag)
 			{
 				flag_has_found = 1;
 				*flag |= g_opts[command][opt_index].flag;
-				return (test_options(info, command, opt_index, c));
+				if ((new = test_options(info, command, opt_index, c)) != NULL)
+					return (new);
 			}
 		}
 		if (flag_has_found != 1)
