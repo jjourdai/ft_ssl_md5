@@ -27,10 +27,12 @@ SRC_NAME =	main.c \
 			keys.c \
 			des_encode.c \
 			des_decode.c \
+			des3.c \
+			salt_and_corrupt.c \
 			core_des.c \
 			error_msg.c \
-			key_generation.c \
-			pbkdf2.c \
+			des_key_generator.c \
+			des3_key_generator.c \
 
 
 OBJ_PATH = ./.obj/
@@ -45,8 +47,8 @@ NAME = ft_ssl
 
 CC = gcc
 
-CFLAGS = -Wall -Wextra -g -fsanitize=address
-# CFLAGS = -Wall -Wextra
+# CFLAGS = -Wall -Wextra -g -fsanitize=address -fno-omit-frame-pointer
+CFLAGS = -Wall -Wextra -Werror
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
 

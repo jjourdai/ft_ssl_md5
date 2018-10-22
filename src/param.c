@@ -111,9 +111,9 @@ t_parameters	*test_options(t_argv *info, int command, int opt_index, char c)
 
 t_parameters	*shortname_opt(t_argv *info, int command, int *flag)
 {
-	int		opt_index;
-	char	c;
-	int		flag_has_found;
+	int				opt_index;
+	char			c;
+	int				flag_has_found;
 	t_parameters	*new;
 
 	info->j = 0;
@@ -127,7 +127,7 @@ t_parameters	*shortname_opt(t_argv *info, int command, int *flag)
 			{
 				flag_has_found = 1;
 				*flag |= g_opts[command][opt_index].flag;
-				if ((new = test_options(info, command, opt_index, c)) != NULL)
+				if ((new = test_options(info, command, opt_index, c)))
 					return (new);
 			}
 		}
@@ -148,20 +148,19 @@ t_list			*get_params(char **argv, int argc, int command, int *flag)
 	info.i = 1;
 	info.argv = argv;
 	while (++info.i < argc)
-	{
 		if (ft_strncmp(argv[info.i], "--", 2) == 0)
-		{
-			longname_opt(argv[1]);
-		}
+			break ;
 		else if (argv[info.i][0] == '-')
 		{
 			if ((new_params = shortname_opt(&info, command, flag)) != NULL)
+			{
 				ft_lstadd_back(&parameters, ft_lstnew(new_params,\
 					sizeof(t_parameters)));
+				ft_memdel((void**)&new_params);
+			}
 		}
 		else
 			ft_lstadd_back(&parameters, ft_lstnew(\
 			store_parameters(argv[info.i], NONE_), sizeof(t_parameters)));
-	}
 	return (parameters);
 }

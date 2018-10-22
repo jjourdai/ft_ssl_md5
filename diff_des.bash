@@ -15,7 +15,7 @@ do
 
 	./ft_ssl des -d -a -k $K -i test1 > test3
 	openssl des-ecb -d -a -K $K -in test2 > test4
-	diff test3 test4
+	diff test3 test4 > diff.txt
 	if [ "$(echo $?)" != "0" ]
 		then
 			exit
@@ -25,7 +25,7 @@ do
 
 	./ft_ssl des-cbc -d -a -k $K -v $K -i test1 > test3
 	openssl des-cbc -d -a -K $K -iv $K -in test2 > test4
-	diff test3 test4
+	diff test3 test4 > diff.txt
 	if [ "$(echo $?)" != "0" ]
 		then
 			exit
@@ -35,7 +35,7 @@ do
 
 	./ft_ssl des3 -d -a -k $K -v $K -i test1> test3
 	openssl des3 -d -a -K $K -iv $K -in test2 > test4
-	diff test3 test4
+	diff test3 test4 > diff.txt
 	if [ "$(echo $?)" != "0" ]
 		then
 			exit
@@ -45,7 +45,7 @@ do
 
 	./ft_ssl des -d -k $K -i test2 | xxd > test3
 	openssl des-ecb -d -K $K -in test1 | xxd > test4
-	diff test3 test4
+	diff test3 test4 > diff.txt
 	if [ "$(echo $?)" != "0" ]
 		then
 			exit
@@ -55,7 +55,7 @@ do
 
 	./ft_ssl des-ecb -d -k $K -i test2 | xxd > test3
 	openssl des-ecb -d -K $K -in test1 | xxd > test4
-	diff test3 test4
+	diff test3 test4 > diff.txt
 	if [ "$(echo $?)" != "0" ]
 		then
 			exit
@@ -65,7 +65,7 @@ do
 
 	./ft_ssl des-cbc -d -k $K -v $K -i test2 | xxd > test3
 	openssl des-cbc -d -K $K -iv $K -in test1 | xxd > test4
-	diff test3 test4
+	diff test3 test4 > diff.txt
 	if [ "$(echo $?)" != "0" ]
 		then
 			exit
@@ -75,37 +75,43 @@ do
 
 	./ft_ssl des3 -d -k $K -v $K -i test2 | xxd > test3
 	openssl des3 -d -K $K -iv $K -in test1 | xxd > test4
-	diff test3 test4
+	diff test3 test4 > diff.txt
 	if [ "$(echo $?)" != "0" ]
 		then
 			exit
 	fi
+	echo "./ft_ssl des-ecb -e -p $pass -s $K -i random.txt > test1"
 	./ft_ssl des-ecb -e -p $pass -s $K -i random.txt > test1
 	openssl des-ecb -e -pass pass:$pass -S $K -in random.txt > test2
 
+	echo "./ft_ssl des-ecb -d -p $pass -i test1 | xxd > test3"
 	./ft_ssl des-ecb -d -p $pass -i test1 | xxd > test3
 	openssl des-ecb -d -pass pass:$pass -in test2 | xxd > test4
-	diff test3 test4
+	diff test3 test4 > diff.txt
 	if [ "$(echo $?)" != "0" ]
 		then
 			exit
 	fi
+	echo "./ft_ssl des-cbc -e -p $pass -s $K -v $K -i random.txt > test1"
 	./ft_ssl des-cbc -e -p $pass -s $K -v $K -i random.txt > test1
 	openssl des-cbc -e -pass pass:$pass -S $K -iv $K -in random.txt > test2
 
+	echo "./ft_ssl des-cbc -d  -p $pass -i test2 -v $K | xxd > test3"
 	./ft_ssl des-cbc -d  -p $pass -i test2 -v $K | xxd > test3
 	openssl des-cbc -d -pass pass:$pass -iv $K -in test1 | xxd > test4
-	diff test3 test4
+	diff test3 test4 > diff.txt
 	if [ "$(echo $?)" != "0" ]
 		then
 			exit
 	fi
+	echo "./ft_ssl des3 -e -p $pass -v $K -s $K -i random.txt > test1"
 	./ft_ssl des3 -e -p $pass -v $K -s $K -i random.txt > test1
 	openssl des3 -e -pass pass:$pass -iv $K -S $K -in random.txt > test2
 
+	echo "./ft_ssl des3 -d  -p $pass -v $K -i test1 | xxd > test3"
 	./ft_ssl des3 -d  -p $pass -v $K -i test1 | xxd > test3
 	openssl des3 -d -pass pass:$pass -iv $K  -in test2 | xxd > test4
-	diff test3 test4
+	diff test3 test4 > diff.txt
 	if [ "$(echo $?)" != "0" ]
 		then
 			exit

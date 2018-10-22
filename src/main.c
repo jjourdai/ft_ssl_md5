@@ -47,6 +47,7 @@ int			main(int argc, char **argv)
 	t_list		*parameters;
 	int			flag;
 
+	flag = 0;
 	if (argc == 1)
 		raise_error(GENERAL, USAGE, NULL, EXIT);
 	else

@@ -19,6 +19,25 @@ static char		g_data[][10] = {
 	[FILE_] = "%s",
 };
 
+char		*padd_with_000(char *str)
+{
+	char *new;
+
+	new = ft_memalloc(16 + 1);
+	if (str[4] == 0)
+		ft_sprintf(new, "0000%s", str);
+	else if (str[5] == 0)
+		ft_sprintf(new, "000%s", str);
+	else if (str[6] == 0)
+		ft_sprintf(new, "00%s", str);
+	else if (str[7] == 0)
+		ft_sprintf(new, "0%s", str);
+	else
+		ft_sprintf(new, "%s", str);
+	ft_memdel((void**)&str);
+	return (new);
+}
+
 char		*int_to_char(t_data *target, size_t length, int command)
 {
 	size_t	i;
@@ -34,14 +53,7 @@ char		*int_to_char(t_data *target, size_t length, int command)
 				"0123456789abcdef");
 		else
 			str = ft_itoa_base_ul(target->final_hash[i], "0123456789abcdef");
-		if (str[4] == 0)
-			ft_sprintf(str, "0000%s", str);
-		else if (str[5] == 0)
-			ft_sprintf(str, "000%s", str);
-		else if (str[6] == 0)
-			ft_sprintf(str, "00%s", str);
-		else if (str[7] == 0)
-			ft_sprintf(str, "0%s", str);
+		str = padd_with_000(str);
 		hash_str = (!hash_str) ? str : ft_strjoin_free(hash_str, str, 3);
 	}
 	return (hash_str);

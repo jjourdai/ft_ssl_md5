@@ -18,7 +18,6 @@ static void		fill_target_struct(t_data *target, t_list *parameters)
 	t_parameters	*current;
 
 	tmp = parameters;
-	target->param_type = STDIN_;
 	while (tmp)
 	{
 		current = (t_parameters*)tmp->content;
@@ -30,7 +29,8 @@ static void		fill_target_struct(t_data *target, t_list *parameters)
 			target->string = (uint8_t*)current->str;
 		}
 		else if (current->type & F_KEY)
-			ft_memcpy(target->key, current->str, (ft_strlen(current->str) > DES3_KEY_LEN) ? DES3_KEY_LEN : ft_strlen(current->str));
+			ft_memcpy(target->key, current->str, (ft_strlen(current->str)\
+			> DES3_KEY_LEN) ? DES3_KEY_LEN : ft_strlen(current->str));
 		else if (current->type & F_IVECTOR)
 			ft_memcpy(target->iv, current->str, DES_KEY_LEN);
 		else if (current->type & F_SALT)
@@ -48,6 +48,7 @@ void			run_des_parameters_and_exec(t_command *cmd, t_list *parameters,\
 
 	ft_bzero(&target, sizeof(target));
 	target.fd = STDOUT_FILENO;
+	target.param_type = STDIN_;
 	fill_target_struct(&target, parameters);
 	ft_lstdel(&parameters, ft_del);
 	if (target.param_type == STDIN_)

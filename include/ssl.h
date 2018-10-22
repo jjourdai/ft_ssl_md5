@@ -6,7 +6,7 @@
 /*   By: jjourdai <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 13:30:52 by jjourdai          #+#    #+#             */
-/*   Updated: 2018/10/17 10:42:02 by jjourdai         ###   ########.fr       */
+/*   Updated: 2018/10/22 16:24:35 by jjourdai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ enum	e_error {
 	GENERAL,
 	READ_ERROR,
 	WRONG_PASSWD,
+	BAD_MAGIC_NUMBER,
 	EXIT,
 };
 
@@ -175,8 +176,10 @@ void				des_ecb_encrypt(t_data *info, char *result);
 void				des_ecb_decrypt(t_data *info);
 void				des_cbc_encrypt(t_data *info, uint64_t iv, char *result);
 void				des_cbc_decrypt(t_data *info, uint64_t iv);
-void				des3_encrypt(t_data *info, uint64_t iv, char *encrypted_string);
-void				des3_decrypt(t_data *info, uint64_t iv, char *decrypted_string);
+void				des3_encrypt(t_data *info, uint64_t iv,\
+	char *encrypted_string);
+void				des3_decrypt(t_data *info, uint64_t iv,\
+	char *decrypted_string);
 uint64_t			reverse_permutation(uint64_t old_block);
 uint64_t			substitutions(uint64_t d0);
 uint64_t			initial_permutation(uint64_t block);
@@ -186,7 +189,7 @@ void				base64_decode(t_data *info);
 void				base64_encode(t_data *info);
 uint64_t			iv_or_salt_generator(void);
 uint64_t			iv_or_salt_str_to_bytes(char str[17]);
-char				*wrap_getpass(void);
+char				*wrap_getpass(t_data *info);
 t_command			*get_function(char *str);
 char				*int_to_char(t_data *target, size_t length, int command);
 void				check_if_corrupted(int cmd, t_data *info);
@@ -194,10 +197,13 @@ char				*generate_key(uint64_t salt, char *password);
 char				*generate_key_des3(uint64_t salt, char *password);
 void				des3(t_data *info);
 void				check_if_corrupted_padding_after_decrypt(t_data *info);
-void				padd_key(char *key, size_t klen);
+void				padd_key(char *key, size_t klen, size_t len);
 char				*put_padding_character(t_data *info);
 void				remove_salted(t_data *info);
-uint64_t			update_block_cbc_encrypt(t_data *info, uint64_t keys[16], uint64_t iv, uint64_t block);
-uint64_t			update_block_cbc_decrypt(t_data *info, uint64_t keys[16], uint64_t iv, uint64_t block);
+uint64_t			update_block_cbc_encrypt(uint64_t keys[16],\
+	uint64_t iv, uint64_t block);
+uint64_t			update_block_cbc_decrypt(uint64_t keys[16],\
+	uint64_t iv, uint64_t block);
+void				add_salted(t_data *info, uint64_t salt);
 
 #endif

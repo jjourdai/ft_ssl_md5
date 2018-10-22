@@ -97,11 +97,8 @@ uint64_t	split_then_pass_cp2(uint64_t keys[16], uint64_t old_block)
 	return (block);
 }
 
-void		padd_key(char *key, size_t klen)
+void		padd_key(char *key, size_t klen, size_t len)
 {
-	size_t len;
-
-	len = ft_strlen(key);
 	ft_toupper_str(key, len);
 	if (len < klen)
 		ft_memset(key + len, '0', klen - len);
@@ -113,7 +110,7 @@ void		get_keys(uint64_t keys[16], char *key, size_t len)
 	uint64_t		base_key;
 	uint64_t		block;
 
-	padd_key(key, DES_KEY_LEN);
+	padd_key(key, DES_KEY_LEN, len);
 	if (!string_is_only_hexchar(key))
 		raise_error(DES, INVALID_KEY, NULL, EXIT);
 	base_key = ft_hexa_to_uint64_t(key);
