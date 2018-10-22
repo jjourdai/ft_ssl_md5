@@ -54,7 +54,7 @@ char		*wrap_getpass(t_data *info)
 	ft_putendl("enter encryption password:");
 	ret0 = getpass(password0);
 	ft_memcpy(password0, ret0, ft_strlen(ret0));
-	if (info->flag & F_ENCODE)
+	if (!(info->flag & F_DECRYPT))
 	{
 		ft_putendl("Verifying - enter encryption password:");
 		if ((strcmp(ret0 = getpass(password1), password0)) != 0)
