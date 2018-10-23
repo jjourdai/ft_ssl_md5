@@ -33,6 +33,7 @@ SRC_NAME =	main.c \
 			error_msg.c \
 			des_key_generator.c \
 			des3_key_generator.c \
+			handle_input_rsa.c \
 
 
 OBJ_PATH = ./.obj/
@@ -47,8 +48,8 @@ NAME = ft_ssl
 
 CC = gcc
 
-# CFLAGS = -Wall -Wextra -g -fsanitize=address -fno-omit-frame-pointer
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -g -fsanitize=address -fno-omit-frame-pointer
+# CFLAGS = -Wall -Wextra -Werror
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
 

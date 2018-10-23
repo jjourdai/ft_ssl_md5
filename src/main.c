@@ -25,6 +25,8 @@ static t_command	g_cmd[][6] = {
 			display_des}},
 	[DES3] = {{DES3, "des3", des3, run_des_parameters_and_exec,\
 			display_des}},
+	[GENRSA] = {{GENRSA, "genrsa", genrsa, run_des_parameters_and_exec,\
+			display_rsa}},
 };
 
 t_command	*get_function(char *str)

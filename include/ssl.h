@@ -46,6 +46,8 @@
 enum	e_macro {
 	ERROR,
 	SUCCESS,
+	true,
+	false,
 	DATA_RECEIVED,
 	DATA_NOT_RECEIVED,
 };
@@ -58,6 +60,7 @@ enum	e_param_type {
 	DES_ECB,
 	DES_CBC,
 	DES3,
+	GENRSA,
 	END,
 	FILE_,
 	STDIN_,
@@ -105,6 +108,11 @@ enum	e_des {
 	DES3_KEY_LEN = 64,
 	DES_KEY_LEN = 16,
 	PASSWORD_LEN = 128,
+};
+
+enum	e_rsa {
+	F_RANDOM = (1 << 15),
+
 };
 
 typedef struct		s_argv {
@@ -205,5 +213,7 @@ uint64_t			update_block_cbc_encrypt(uint64_t keys[16],\
 uint64_t			update_block_cbc_decrypt(uint64_t keys[16],\
 	uint64_t iv, uint64_t block);
 void				add_salted(t_data *info, uint64_t salt);
+void    genrsa(t_data *info);
+void    display_rsa(t_data *info, struct s_command *cmd);
 
 #endif
